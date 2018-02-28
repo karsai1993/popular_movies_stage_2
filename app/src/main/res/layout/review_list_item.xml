@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/list_item_padding"
+    android:paddingRight="@dimen/list_item_padding" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            style="@style/review_list_item"
+            android:id="@+id/tv_review_header" />
+
+        <TextView
+            style="@style/review_list_item"
+            android:id="@+id/tv_review_author"
+            android:textSize="@dimen/detail_activity_review_author_text_size"
+            android:textStyle="italic"
+            android:gravity="center"
+            android:layout_weight="@dimen/layout_weight_middle" />
+
+        <ImageButton
+            style="@style/review_list_item"
+            android:id="@+id/ib_review_open"
+            android:src="@drawable/ic_icons8_open_in_browser_96"
+            android:contentDescription="@string/open_in_browser_image_button_content_description"/>
+
+    </LinearLayout>
+
+    <TextView
+        style="@style/AppTheme"
+        android:id="@+id/tv_review_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

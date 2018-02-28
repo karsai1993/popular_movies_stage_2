@@ -1,0 +1,95 @@
+package com.udacity.popularmovies.adapter;
+
+import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.text.SpannableStringBuilder;
+import android.text.style.UnderlineSpan;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
+
+import com.udacity.popularmovies.CommonApplicationConstants;
+import com.udacity.popularmovies.R;
+import com.udacity.popularmovies.model.Review;
+import com.udacity.popularmovies.utils.IntentUtils;
+
+import java.util.List;
+
+public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>{
+
+    private Context mContext;
+    private List<Review> mReviewList;
+    private boolean mIsSequenceNumberNecessary;
+
+    private final String HEADER_LABEL = "Author:";
+    private final char SPACE_CHARACTER = ' ';
+
+    public ReviewAdapter(Context context, List<Review> reviewList, boolean isSequenceNumberNecessary) {
+        this.mContext = context;
+        this.mReviewList = reviewList;
+        this.mIsSequenceNumberNecessary = isSequenceNumberNecessary;
+    }
+
+    @Override
+    public ReviewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        int reviewListItemId = R.layout.review_list_item;
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View view = layoutInflater.inflate(reviewListItemId, parent, false);
+        return new ReviewViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(final ReviewViewHolder holder, int position) {
+        String reviewSequence = String.valueOf((position + 1));
+        String authorName = mReviewList.get(position).getAuthor();
+        String content = mReviewList.get(position).getContent();
+        final String url = mReviewList.get(position).getUrl();
+
+        String headerText;
+        if (mIsSequenceNumberNecessary) {
+            headerText = reviewSequence
+                    + CommonApplicationConstants.DOT_CHARACTER
+                    + SPACE_CHARACTER
+                    + HEADER_LABEL;
+        } else {
+            headerText = HEADER_LABEL;
+        }
+        SpannableStringBuilder str = new SpannableStringBuilder(headerText);
+        str.setSpan(new UnderlineSpan(), 0, headerText.length(), 0);
+        holder.reviewHeaderTextView.setText(str);
+
+        holder.reviewAuthorTextView.setText(authorName);
+
+        holder.reviewContentTextView.setText(content);
+
+        holder.reviewOpenImageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                IntentUtils.openWebPage(mContext, url);
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return mReviewList.size();
+    }
+
+    class ReviewViewHolder extends RecyclerView.ViewHolder {
+        final TextView reviewHeaderTextView;
+        final TextView reviewAuthorTextView;
+        final ImageButton reviewOpenImageBtn;
+        final TextView reviewContentTextView;
+
+        public ReviewViewHolder(View itemView) {
+            super(itemView);
+            reviewHeaderTextView = itemView.findViewById(R.id.tv_review_header);
+            reviewAuthorTextView = itemView.findViewById(R.id.tv_review_author);
+            reviewOpenImageBtn = itemView.findViewById(R.id.ib_review_open);
+            reviewContentTextView = itemView.findViewById(R.id.tv_review_content);
+        }
+    }
+}

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/list_item_padding"
+    android:paddingRight="@dimen/list_item_padding" >
+
+    <TextView
+        style="@style/video_list_item"
+        android:id="@+id/tv_video_sequence"
+        android:layout_weight="@dimen/layout_weight_low" />
+
+    <TextView
+        style="@style/video_list_item"
+        android:id="@+id/tv_video_name"
+        android:layout_weight="@dimen/layout_weight_large"
+        android:gravity="center" />
+
+    <ImageButton
+        style="@style/video_list_item"
+        android:id="@+id/ib_video_play"
+        android:layout_weight="@dimen/layout_weight_low"
+        android:src="@drawable/ic_icons8_circled_play_96"
+        android:contentDescription="@string/play_image_button_content_description" />
+
+    <ImageButton
+        style="@style/video_list_item"
+        android:id="@+id/ib_video_share"
+        android:layout_weight="@dimen/layout_weight_low"
+        android:src="@drawable/ic_icons8_share_filled_500"
+        android:contentDescription="@string/share_image_button_content_description" />
+
+</LinearLayout>

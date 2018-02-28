@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/sv_detail_activity">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/detail_activity_image_layout_height"
+                android:padding="@dimen/detail_activity_inner_padding"
+                android:layout_gravity="center_horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        style="@style/detail_activity_image_view"
+                        android:id="@+id/iv_detail_activity_poster"
+                        android:contentDescription="@string/poster_image_content_description"
+                        android:paddingRight="@dimen/detail_activity_inner_padding"
+                        android:paddingEnd="@dimen/detail_activity_inner_padding" />
+
+                    <ImageView
+                        style="@style/detail_activity_image_view"
+                        android:id="@+id/iv_detail_activity_backdrop"
+                        android:contentDescription="@string/backdrop_image_content_description" />
+
+                </LinearLayout>
+
+            </HorizontalScrollView>
+
+            <TextView
+                style="@style/AppTheme"
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textStyle="bold|italic"
+                android:textSize="@dimen/detail_activity_title_text_size"
+                android:paddingBottom="@dimen/detail_activity_title_padding_bottom"
+                android:paddingLeft="@dimen/detail_activity_side_padding"
+                android:paddingRight="@dimen/detail_activity_side_padding"/>
+
+            <LinearLayout
+                style="@style/detail_activity_field_layout"
+                android:paddingBottom="@dimen/detail_activity_inner_padding">
+
+                <TextView
+                    style="@style/detail_activity_field_left_right_label"
+                    android:id="@+id/tv_original_title_label"
+                    android:text="@string/detail_activity_original_title_label"/>
+
+                <TextView
+                    style="@style/detail_activity_field_left_right_value"
+                    android:id="@+id/tv_original_title" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/detail_activity_field_layout"
+                android:paddingBottom="@dimen/detail_activity_inner_padding">
+
+                <TextView
+                    style="@style/detail_activity_field_left_right_label"
+                    android:text="@string/detail_activity_average_vote_label"/>
+
+                <TextView
+                    style="@style/detail_activity_field_left_right_value"
+                    android:id="@+id/tv_average_vote" />
+
+            </LinearLayout>
+
+            <TextView
+                style="@style/detail_activity_field_up_down_label"
+                android:text="@string/detail_activity_overview_label" />
+
+            <TextView
+                style="@style/detail_activity_field_up_down_value"
+                android:id="@+id/tv_overview" />
+
+            <TextView
+                style="@style/detail_activity_field_up_down_label"
+                android:id="@+id/tv_video_label" />
+
+            <android.support.v7.widget.RecyclerView
+                style="@style/detail_activity_field_up_down_value"
+                android:id="@+id/rv_videos" />
+
+            <TextView
+                style="@style/detail_activity_field_up_down_label"
+                android:id="@+id/tv_review_label" />
+
+            <android.support.v7.widget.RecyclerView
+                style="@style/detail_activity_field_up_down_value"
+                android:id="@+id/rv_reviews" />
+
+            <LinearLayout
+                style="@style/detail_activity_field_layout"
+                android:paddingBottom="@dimen/detail_activity_side_padding">
+
+                <TextView
+                    style="@style/detail_activity_field_left_right_label"
+                    android:text="@string/detail_activity_release_date_label"/>
+
+                <TextView
+                    style="@style/detail_activity_field_left_right_value"
+                    android:id="@+id/tv_release_date" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <TextView
+        style="@style/activity_text_view"
+        android:id="@+id/tv_detail_request_fetch_error"
+        android:text="@string/response_fetch_error_message" />
+
+    <TextView
+        style="@style/activity_text_view"
+        android:id="@+id/tv_detail_request_network_error"
+        android:text="@string/response_network_error_message" />
+
+    <ProgressBar
+        android:layout_width="@dimen/progress_bar_width_and_height"
+        android:layout_height="@dimen/progress_bar_width_and_height"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:id="@+id/pb_detail_request_loading"
+        android:visibility="invisible"/>
+</merge>

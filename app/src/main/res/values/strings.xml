@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+
+    <string name="menu_settings_label">Settings</string>
+    <string name="menu_refresh_label">Refresh</string>
+
+    <string name="pref_sort_order_label">Sorting started by</string>
+    <string name="pref_sort_order_key">sorting</string>
+    <string name="pref_sort_order_by_popularity_label">Most Popular</string>
+    <string name="pref_sort_order_by_popularity_value">popular</string>
+    <string name="pref_sort_order_by_ratings_label">Highest Rated</string>
+    <string name="pref_sort_order_by_ratings_value">top_rated</string>
+
+    <string name="response_fetch_error_message">Data cannot be fetched!\n
+                                                Please, click Refresh in menu!</string>
+    <string name="response_network_error_message">Network seems unavailable!\n
+                                                  Please, check,\n
+                                                  then click Refresh in menu!</string>
+
+    <string name="detail_activity_label">Details</string>
+    <string name="detail_activity_original_title_label">Original title:</string>
+    <string name="detail_activity_average_vote_label">Rating:</string>
+    <string name="detail_activity_release_date_label">Release date:</string>
+    <string name="detail_activity_overview_label">Description:</string>
+    <string name="detail_activity_review_author_label">Author:</string>
+
+    <string name="poster_image_content_description">Poster Image</string>
+    <string name="backdrop_image_content_description">Backdrop Image</string>
+    <string name="open_in_browser_image_button_content_description">Open Browser Image Button</string>
+    <string name="share_image_button_content_description">Share Image Button</string>
+    <string name="play_image_button_content_description">Play Image Button</string>
+</resources>
