@@ -1,4 +1,4 @@
-# Popular Movies Project, Stage 1
+# Popular Movies Project, Stage 2
 
 ## API Key handling
 
