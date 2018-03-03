@@ -1,4 +1,4 @@
-package com.udacity.popularmovies;
+package com.udacity.popularmovies.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -6,13 +6,20 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.udacity.popularmovies.AsyncTaskPhaseListener;
+import com.udacity.popularmovies.CommonApplicationConstants;
+import com.udacity.popularmovies.MovieDataProcessorAsyncTask;
+import com.udacity.popularmovies.R;
 import com.udacity.popularmovies.adapter.MovieAdapter;
 import com.udacity.popularmovies.model.Movie;
 import com.udacity.popularmovies.utils.JsonUtils;
@@ -50,14 +57,19 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private List<Movie> mMovieList;
     private Unbinder mUnbinder;
 
-    private final int COLUMN_NUMBER = 3;
+    private final int COLUMN_NUMBER = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mUnbinder = ButterKnife.bind(this);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, COLUMN_NUMBER);
+       // GridLayoutManager layoutManager = new GridLayoutManager(this, COLUMN_NUMBER);
+        //LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayout.HORIZONTAL, false);
+        //layoutManager.setOrientation(LinearLayout.HORIZONTAL);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, COLUMN_NUMBER);
+        layoutManager.setAutoMeasureEnabled(true);
+        //LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         movieRecyclerView.setLayoutManager(layoutManager);
         movieRecyclerView.setHasFixedSize(true);
         applySortingOrderBasedOnSharedPreferences();

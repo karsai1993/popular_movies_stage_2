@@ -13,6 +13,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">horizontal</item>
+        <item name="android:paddingBottom">@dimen/detail_activity_inner_padding</item>
     </style>
 
     <style name="detail_activity_field_left_right_label" parent="AppTheme">
@@ -21,6 +22,7 @@
         <item name="android:layout_weight">@dimen/layout_weight_middle</item>
         <item name="android:paddingLeft">@dimen/detail_activity_side_padding</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/detail_activity_field_label_text_size</item>
     </style>
 
     <style name="detail_activity_field_left_right_value" parent="AppTheme">
@@ -38,6 +40,7 @@
         <item name="android:paddingLeft">@dimen/detail_activity_side_padding</item>
         <item name="android:paddingRight">@dimen/detail_activity_side_padding</item>
         <item name="android:paddingStart">@dimen/detail_activity_side_padding</item>
+        <item name="android:textSize">@dimen/detail_activity_field_label_text_size</item>
     </style>
 
     <style name="detail_activity_field_up_down_value" parent="AppTheme">

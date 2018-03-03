@@ -39,22 +39,63 @@
 
             </HorizontalScrollView>
 
-            <TextView
-                style="@style/AppTheme"
-                android:id="@+id/tv_title"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:textStyle="bold|italic"
-                android:textSize="@dimen/detail_activity_title_text_size"
+                android:orientation="horizontal"
                 android:paddingBottom="@dimen/detail_activity_title_padding_bottom"
                 android:paddingLeft="@dimen/detail_activity_side_padding"
-                android:paddingRight="@dimen/detail_activity_side_padding"/>
+                android:paddingRight="@dimen/detail_activity_side_padding">
+
+                <TextView
+                    android:text="asdf"
+                    style="@style/AppTheme"
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:textStyle="bold|italic"
+                    android:textSize="@dimen/detail_activity_title_text_size" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ib_favourite"
+                    android:src="@drawable/ic_icons8_star_96"
+                    android:contentDescription="@string/star_image_button_content_description"/>
+
+            </LinearLayout>
 
             <LinearLayout
-                style="@style/detail_activity_field_layout"
-                android:paddingBottom="@dimen/detail_activity_inner_padding">
+                style="@style/detail_activity_field_layout" >
+
+                <TextView
+                    style="@style/detail_activity_field_left_right_label"
+                    android:text="@string/detail_activity_average_vote_label"/>
+
+                <TextView
+                    style="@style/detail_activity_field_left_right_value"
+                    android:id="@+id/tv_average_vote" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/detail_activity_field_layout" >
+
+                <TextView
+                    style="@style/detail_activity_field_left_right_label"
+                    android:text="@string/detail_activity_release_date_label"/>
+
+                <TextView
+                    style="@style/detail_activity_field_left_right_value"
+                    android:id="@+id/tv_release_date" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/detail_activity_field_layout" >
 
                 <TextView
                     style="@style/detail_activity_field_left_right_label"
@@ -64,20 +105,6 @@
                 <TextView
                     style="@style/detail_activity_field_left_right_value"
                     android:id="@+id/tv_original_title" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/detail_activity_field_layout"
-                android:paddingBottom="@dimen/detail_activity_inner_padding">
-
-                <TextView
-                    style="@style/detail_activity_field_left_right_label"
-                    android:text="@string/detail_activity_average_vote_label"/>
-
-                <TextView
-                    style="@style/detail_activity_field_left_right_value"
-                    android:id="@+id/tv_average_vote" />
 
             </LinearLayout>
 
@@ -103,21 +130,8 @@
 
             <android.support.v7.widget.RecyclerView
                 style="@style/detail_activity_field_up_down_value"
+                android:paddingBottom="@dimen/detail_activity_side_padding"
                 android:id="@+id/rv_reviews" />
-
-            <LinearLayout
-                style="@style/detail_activity_field_layout"
-                android:paddingBottom="@dimen/detail_activity_side_padding">
-
-                <TextView
-                    style="@style/detail_activity_field_left_right_label"
-                    android:text="@string/detail_activity_release_date_label"/>
-
-                <TextView
-                    style="@style/detail_activity_field_left_right_value"
-                    android:id="@+id/tv_release_date" />
-
-            </LinearLayout>
 
         </LinearLayout>
 

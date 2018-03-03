@@ -22,6 +22,7 @@
         android:id="@+id/ib_video_play"
         android:layout_weight="@dimen/layout_weight_low"
         android:src="@drawable/ic_icons8_circled_play_96"
+        android:background="@drawable/image_button_shape_green"
         android:contentDescription="@string/play_image_button_content_description" />
 
     <ImageButton
@@ -29,6 +30,7 @@
         android:id="@+id/ib_video_share"
         android:layout_weight="@dimen/layout_weight_low"
         android:src="@drawable/ic_icons8_share_filled_500"
+        android:background="@drawable/image_button_shape_green"
         android:contentDescription="@string/share_image_button_content_description" />
 
 </LinearLayout>

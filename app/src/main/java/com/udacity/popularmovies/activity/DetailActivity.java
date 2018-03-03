@@ -1,4 +1,4 @@
-package com.udacity.popularmovies;
+package com.udacity.popularmovies.activity;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,11 +9,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.udacity.popularmovies.AsyncTaskPhaseListener;
+import com.udacity.popularmovies.CommonApplicationConstants;
+import com.udacity.popularmovies.MovieDataProcessorAsyncTask;
+import com.udacity.popularmovies.R;
 import com.udacity.popularmovies.adapter.ReviewAdapter;
 import com.udacity.popularmovies.adapter.VideoAdapter;
 import com.udacity.popularmovies.model.Movie;
@@ -53,6 +59,8 @@ public class DetailActivity extends AppCompatActivity {
     private String mReleaseDate;
     private List<Review> mReviewList;
     private List<Video> mVideoList;
+    private int mAsyncTaskProcessCounter;
+    private Toast mToast;
 
     private final String DATA_NOT_AVAILABLE = "DNA";
     private final String VIDEO_LIST_LABEL_SINGLE = "Trailer:";
@@ -60,6 +68,9 @@ public class DetailActivity extends AppCompatActivity {
     private final String VIDEO_LIST_LABEL_PLURAL_BASE = "Trailers (";
     private final String REVIEW_LIST_LABEL_PLURAL_BASE = "Reviews (";
     private final String LIST_LABEL_PLURAL_ENDING = "):";
+    private final String RATING_MAX_COMPARATOR_TEXT = " / 10";
+    private final String MESSAGE_FOR_ADDING_TO_FAVOURITE_LIST = " is added to list of favourites";
+    private final String MESSAGE_FOR_REMOVING_FROM_FAVOURITE_LIST = " is removed from list of favourites";
 
     /**
      * butterknife is a third party library which is used here to binding the ids to fields easier
@@ -98,6 +109,8 @@ public class DetailActivity extends AppCompatActivity {
     TextView reviewListLabelTextView;
     @BindView(R.id.rv_reviews)
     RecyclerView reviewListRecyclerView;
+    @BindView(R.id.ib_favourite)
+    ImageButton favouriteImageButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -117,6 +130,7 @@ public class DetailActivity extends AppCompatActivity {
             showNetworkError();
         } else {
             showMovieDetails();
+            mAsyncTaskProcessCounter = 0;
             new MovieDataProcessorAsyncTask(new MovieDetailsProcessorAsyncTaskPhaseListenerImpl())
                     .execute(CommonApplicationConstants.REQUEST_TYPE_REVIEW);
             new MovieDataProcessorAsyncTask(new MovieDetailsProcessorAsyncTaskPhaseListenerImpl())
@@ -151,11 +165,52 @@ public class DetailActivity extends AppCompatActivity {
         ImageUtils.loadImage(this, mBackgroundImagePathEnding, backdropImageView);
         textViewValueHandler(titleTextView, mTitle);
         textViewValueHandler(averageVoteTextView, mAverageVote);
+        averageVoteTextView.append(RATING_MAX_COMPARATOR_TEXT);
         textViewValueHandler(overviewTextView, mOverview);
         releaseDateHandler();
         originalTitleHandler();
+        favouriteButtonHandler(this, mTitle, mId);
         initRecyclerView(this, videoListRecyclerView);
         initRecyclerView(this, reviewListRecyclerView);
+    }
+
+    private void favouriteButtonHandler(final Context context, final String title, final String id) {
+        if (isAlreadyMarkedAsFavourite(id)) {
+            favouriteImageButton.setBackground(
+                    getResources().getDrawable(R.drawable.image_button_shape_red));
+        } else {
+            favouriteImageButton.setBackground(
+                    getResources().getDrawable(R.drawable.image_button_shape_green));
+        }
+        favouriteImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isAlreadyMarkedAsFavourite(id)) {
+                    favouriteImageButton.setBackground(
+                            getResources().getDrawable(R.drawable.image_button_shape_green));
+                    showToastMessage(context, mToast, title + MESSAGE_FOR_REMOVING_FROM_FAVOURITE_LIST);
+                } else {
+                    favouriteImageButton.setBackground(
+                            getResources().getDrawable(R.drawable.image_button_shape_red));
+                    showToastMessage(context, mToast, title + MESSAGE_FOR_ADDING_TO_FAVOURITE_LIST);
+                }
+            }
+        });
+    }
+
+    private void showToastMessage(Context context, Toast toast, String text) {
+        if (toast != null) {
+            toast.cancel();
+        }
+        toast = Toast.makeText(
+                context,
+                text,
+                Toast.LENGTH_LONG);
+        toast.show();
+    }
+
+    private boolean isAlreadyMarkedAsFavourite(String id) {
+        return false;
     }
 
     /**
@@ -266,7 +321,7 @@ public class DetailActivity extends AppCompatActivity {
      * Class to implement AsyncTaskPhaseListener for the cases of Movie Details (reviews, videos)
      */
     public class MovieDetailsProcessorAsyncTaskPhaseListenerImpl
-            implements AsyncTaskPhaseListener<String>{
+            implements AsyncTaskPhaseListener<String> {
         private final String REVIEW_REQUEST_URL_PART = "/reviews";
         private final String VIDEO_REQUEST_URL_PART = "/videos";
 
@@ -311,12 +366,15 @@ public class DetailActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } finally {
-                    if (mReviewList != null && mVideoList != null) {
-                        showMovieDetails();
-                        assignValuesToRecyclerView(CommonApplicationConstants.REQUEST_TYPE_REVIEW);
-                        assignValuesToRecyclerView(CommonApplicationConstants.REQUEST_TYPE_VIDEO);
-                    } else {
-                        showFetchError();
+                    mAsyncTaskProcessCounter ++;
+                    if (mAsyncTaskProcessCounter == 2) {
+                        if (mReviewList != null && mVideoList != null) {
+                            showMovieDetails();
+                            assignValuesToRecyclerView(CommonApplicationConstants.REQUEST_TYPE_REVIEW);
+                            assignValuesToRecyclerView(CommonApplicationConstants.REQUEST_TYPE_VIDEO);
+                        } else {
+                            showFetchError();
+                        }
                     }
                 }
             } else {

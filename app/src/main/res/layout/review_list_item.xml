@@ -27,6 +27,7 @@
             style="@style/review_list_item"
             android:id="@+id/ib_review_open"
             android:src="@drawable/ic_icons8_open_in_browser_96"
+            android:background="@drawable/image_button_shape_green"
             android:contentDescription="@string/open_in_browser_image_button_content_description"/>
 
     </LinearLayout>

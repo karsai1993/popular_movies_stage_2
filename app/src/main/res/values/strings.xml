@@ -29,4 +29,5 @@
     <string name="open_in_browser_image_button_content_description">Open Browser Image Button</string>
     <string name="share_image_button_content_description">Share Image Button</string>
     <string name="play_image_button_content_description">Play Image Button</string>
+    <string name="star_image_button_content_description">Add To Favourite List Image Button</string>
 </resources>
