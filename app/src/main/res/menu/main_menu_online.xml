@@ -5,10 +5,10 @@
         android:title="@string/menu_settings_label"
         android:id="@+id/action_settings"
         android:orderInCategory="1"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="never" />
     <item
         android:title="@string/menu_refresh_label"
         android:id="@+id/action_refresh_main_menu"
         android:orderInCategory="2"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
 </menu>

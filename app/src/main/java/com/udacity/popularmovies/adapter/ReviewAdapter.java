@@ -21,15 +21,10 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
     private Context mContext;
     private List<Review> mReviewList;
-    private boolean mIsSequenceNumberNecessary;
 
-    private final String HEADER_LABEL = "Author:";
-    private final char SPACE_CHARACTER = ' ';
-
-    public ReviewAdapter(Context context, List<Review> reviewList, boolean isSequenceNumberNecessary) {
+    public ReviewAdapter(Context context, List<Review> reviewList) {
         this.mContext = context;
         this.mReviewList = reviewList;
-        this.mIsSequenceNumberNecessary = isSequenceNumberNecessary;
     }
 
     @Override
@@ -43,22 +38,12 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
     @Override
     public void onBindViewHolder(final ReviewViewHolder holder, int position) {
-        String reviewSequence = String.valueOf((position + 1));
         String authorName = mReviewList.get(position).getAuthor();
         String content = mReviewList.get(position).getContent();
         final String url = mReviewList.get(position).getUrl();
 
-        String headerText;
-        if (mIsSequenceNumberNecessary) {
-            headerText = reviewSequence
-                    + CommonApplicationConstants.DOT_CHARACTER
-                    + SPACE_CHARACTER
-                    + HEADER_LABEL;
-        } else {
-            headerText = HEADER_LABEL;
-        }
-        SpannableStringBuilder str = new SpannableStringBuilder(headerText);
-        str.setSpan(new UnderlineSpan(), 0, headerText.length(), 0);
+        SpannableStringBuilder str = new SpannableStringBuilder(holder.reviewHeaderTextView.getText().toString());
+        str.setSpan(new UnderlineSpan(), 0, holder.reviewHeaderTextView.getText().toString().length(), 0);
         holder.reviewHeaderTextView.setText(str);
 
         holder.reviewAuthorTextView.setText(authorName);

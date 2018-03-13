@@ -4,33 +4,50 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/list_item_padding"
-    android:paddingRight="@dimen/list_item_padding" >
+    android:paddingTop="@dimen/list_item_padding"
+    android:focusable="true" >
 
     <TextView
-        style="@style/video_list_item"
-        android:id="@+id/tv_video_sequence"
-        android:layout_weight="@dimen/layout_weight_low" />
-
-    <TextView
-        style="@style/video_list_item"
+        style="@style/video_list_main_item"
         android:id="@+id/tv_video_name"
-        android:layout_weight="@dimen/layout_weight_large"
-        android:gravity="center" />
+        android:gravity="center"
+        android:layout_weight="@dimen/layout_weight_middle"
+        android:layout_marginRight="@dimen/detail_activity_video_list_item_divider_size" />
 
-    <ImageButton
-        style="@style/video_list_item"
-        android:id="@+id/ib_video_play"
-        android:layout_weight="@dimen/layout_weight_low"
-        android:src="@drawable/ic_icons8_circled_play_96"
-        android:background="@drawable/image_button_shape_green"
-        android:contentDescription="@string/play_image_button_content_description" />
+    <ImageView
+        style="@style/video_list_main_item"
+        android:id="@+id/iv_video_poster" />
 
-    <ImageButton
-        style="@style/video_list_item"
-        android:id="@+id/ib_video_share"
-        android:layout_weight="@dimen/layout_weight_low"
-        android:src="@drawable/ic_icons8_share_filled_500"
-        android:background="@drawable/image_button_shape_green"
-        android:contentDescription="@string/share_image_button_content_description" />
+    <!--ImageView
+        style="@style/video_list_main_item"
+        android:id="@+id/iv_video_poster"
+        android:layout_marginRight="@dimen/detail_activity_video_list_item_divider_size" />
+
+    <TextView
+        style="@style/video_list_main_item"
+        android:id="@+id/tv_video_name"
+        android:gravity="center"
+        android:layout_weight="@dimen/layout_weight_middle"
+        android:layout_marginRight="@dimen/detail_activity_video_list_item_divider_size" />
+
+    <LinearLayout
+        style="@style/video_list_main_item"
+        android:orientation="horizontal"
+        android:gravity="center" >
+
+        <ImageButton
+            style="@style/video_list_image_button_item"
+            android:id="@+id/ib_video_play"
+            android:src="@drawable/ic_icons8_circled_play_96"
+            android:contentDescription="@string/play_image_button_content_description"
+            android:layout_marginRight="@dimen/detail_activity_video_list_item_divider_size"/>
+
+        <ImageButton
+            style="@style/video_list_image_button_item"
+            android:id="@+id/ib_video_share"
+            android:src="@drawable/ic_icons8_share_filled_500"
+            android:contentDescription="@string/share_image_button_content_description" />
+
+    </LinearLayout-->
 
 </LinearLayout>

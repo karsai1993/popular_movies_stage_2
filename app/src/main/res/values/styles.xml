@@ -13,14 +13,14 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">horizontal</item>
-        <item name="android:paddingBottom">@dimen/detail_activity_inner_padding</item>
+        <item name="android:paddingBottom">@dimen/detail_activity_inner_dist</item>
     </style>
 
     <style name="detail_activity_field_left_right_label" parent="AppTheme">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">@dimen/layout_weight_middle</item>
-        <item name="android:paddingLeft">@dimen/detail_activity_side_padding</item>
+        <item name="android:paddingLeft">@dimen/detail_activity_side_dist</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">@dimen/detail_activity_field_label_text_size</item>
     </style>
@@ -30,31 +30,31 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">@dimen/layout_weight_middle</item>
         <item name="android:gravity">center</item>
-        <item name="android:paddingRight">@dimen/detail_activity_side_padding</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:paddingRight">@dimen/detail_activity_side_dist</item>
     </style>
 
     <style name="detail_activity_field_up_down_label" parent="AppTheme">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:paddingLeft">@dimen/detail_activity_side_padding</item>
-        <item name="android:paddingRight">@dimen/detail_activity_side_padding</item>
-        <item name="android:paddingStart">@dimen/detail_activity_side_padding</item>
+        <item name="android:paddingLeft">@dimen/detail_activity_side_dist</item>
+        <item name="android:paddingRight">@dimen/detail_activity_side_dist</item>
+        <item name="android:paddingStart">@dimen/detail_activity_side_dist</item>
         <item name="android:textSize">@dimen/detail_activity_field_label_text_size</item>
     </style>
 
     <style name="detail_activity_field_up_down_value" parent="AppTheme">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingLeft">@dimen/detail_activity_side_padding</item>
-        <item name="android:paddingRight">@dimen/detail_activity_side_padding</item>
-        <item name="android:paddingBottom">@dimen/detail_activity_inner_padding</item>
+        <item name="android:paddingLeft">@dimen/detail_activity_side_dist</item>
+        <item name="android:paddingRight">@dimen/detail_activity_side_dist</item>
+        <item name="android:paddingBottom">@dimen/detail_activity_inner_dist</item>
     </style>
 
     <style name="detail_activity_image_view" parent="AppTheme">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:scaleType">fitCenter</item>
         <item name="android:adjustViewBounds">true</item>
     </style>
 
@@ -73,10 +73,16 @@
         <item name="android:layout_gravity">center</item>
     </style>
 
-    <style name="video_list_item" parent="AppTheme">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="video_list_main_item" parent="AppTheme">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="video_list_image_button_item" parent="AppTheme">
+        <item name="android:layout_width">@dimen/detail_activity_regular_button_size</item>
+        <item name="android:layout_height">@dimen/detail_activity_regular_button_size</item>
         <item name="android:layout_gravity">center</item>
+        <item name="android:background">@drawable/image_button_shape_basic</item>
     </style>
 
 </resources>

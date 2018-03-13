@@ -1,33 +1,41 @@
 package com.udacity.popularmovies.activity;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.udacity.popularmovies.AsyncTaskPhaseListener;
+import com.udacity.popularmovies.action.VideoItemTouchHelper;
+import com.udacity.popularmovies.background.AsyncTaskPhaseListener;
 import com.udacity.popularmovies.CommonApplicationConstants;
-import com.udacity.popularmovies.MovieDataProcessorAsyncTask;
+import com.udacity.popularmovies.background.MovieDataProcessorAsyncTask;
 import com.udacity.popularmovies.R;
 import com.udacity.popularmovies.adapter.ReviewAdapter;
 import com.udacity.popularmovies.adapter.VideoAdapter;
+import com.udacity.popularmovies.data.FavouriteMovieListContract;
+import com.udacity.popularmovies.decorator.DividerItemDecorator;
 import com.udacity.popularmovies.model.Movie;
 import com.udacity.popularmovies.model.Review;
 import com.udacity.popularmovies.model.Video;
 import com.udacity.popularmovies.utils.ImageUtils;
 import com.udacity.popularmovies.utils.JsonUtils;
 import com.udacity.popularmovies.utils.NetworkUtils;
+import com.udacity.popularmovies.utils.OfflineDataUtils;
 
 import org.json.JSONException;
 
@@ -53,14 +61,18 @@ public class DetailActivity extends AppCompatActivity {
     private String mTitle;
     private String mOriginalTitle;
     private String mBackgroundImagePathEnding;
+    private byte[] mBackdropByteArray;
     private String mPosterImagePathEnding;
+    private byte[] mPosterByteArray;
     private String mOverview;
     private String mAverageVote;
     private String mReleaseDate;
+    private boolean mIsOnline;
     private List<Review> mReviewList;
     private List<Video> mVideoList;
     private int mAsyncTaskProcessCounter;
     private Toast mToast;
+    private ActionBar mActionBar;
 
     private final String DATA_NOT_AVAILABLE = "DNA";
     private final String VIDEO_LIST_LABEL_SINGLE = "Trailer:";
@@ -76,8 +88,8 @@ public class DetailActivity extends AppCompatActivity {
      * butterknife is a third party library which is used here to binding the ids to fields easier
      * reference: http://jakewharton.github.io/butterknife/
      */
-    @BindView(R.id.sv_detail_activity)
-    ScrollView movieDetailScrollView;
+    @BindView(R.id.ll_detail_activity)
+    LinearLayout movieDetailLinearLayout;
     @BindView(R.id.tv_detail_request_fetch_error)
     TextView fetchErrorTextView;
     @BindView(R.id.tv_detail_request_network_error)
@@ -89,8 +101,6 @@ public class DetailActivity extends AppCompatActivity {
     ImageView backdropImageView;
     @BindView(R.id.iv_detail_activity_poster)
     ImageView posterImageView;
-    @BindView(R.id.tv_title)
-    TextView titleTextView;
     @BindView(R.id.tv_original_title)
     TextView originalTitleTextView;
     @BindView(R.id.tv_original_title_label)
@@ -109,16 +119,78 @@ public class DetailActivity extends AppCompatActivity {
     TextView reviewListLabelTextView;
     @BindView(R.id.rv_reviews)
     RecyclerView reviewListRecyclerView;
-    @BindView(R.id.ib_favourite)
-    ImageButton favouriteImageButton;
+    @BindView(R.id.fab_favourite)
+    FloatingActionButton favouriteFabButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         mUnbinder = ButterKnife.bind(this);
+        mActionBar = getSupportActionBar();
         receiveIntentValues();
-        getMovieRelatedAdditionalData();
+        dataHandler();
+    }
+
+    private void removeMovieFromFavourites(String id) {
+        getContentResolver().delete(
+                FavouriteMovieListContract.FavouriteMovieListEntry.CONTENT_URI,
+                FavouriteMovieListContract.FavouriteMovieListEntry.COLUMN_NAME_ID + " =?",
+                new String[] {id}
+        );
+    }
+
+    private void addMovieToFavourites(
+            String title,
+            String id,
+            byte[] posterImage,
+            byte[] backdropImage,
+            String overview,
+            String averageVote,
+            String releaseDate) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(
+                FavouriteMovieListContract.FavouriteMovieListEntry.COLUMN_NAME_TITLE,
+                title
+        );
+        contentValues.put(
+                FavouriteMovieListContract.FavouriteMovieListEntry.COLUMN_NAME_ID,
+                id
+        );
+        contentValues.put(
+                FavouriteMovieListContract.FavouriteMovieListEntry.COLUMN_NAME_POSTER,
+                posterImage
+        );
+        contentValues.put(
+                FavouriteMovieListContract.FavouriteMovieListEntry.COLUMN_NAME_BACKDROP,
+                backdropImage
+        );
+        contentValues.put(
+                FavouriteMovieListContract.FavouriteMovieListEntry.COLUMN_NAME_OVERVIEW,
+                overview
+        );
+        contentValues.put(
+                FavouriteMovieListContract.FavouriteMovieListEntry.COLUMN_NAME_AVERAGE_VOTE,
+                averageVote
+        );
+        contentValues.put(
+                FavouriteMovieListContract.FavouriteMovieListEntry.COLUMN_NAME_RELEASE_DATE,
+                releaseDate
+        );
+        getContentResolver().insert(
+                FavouriteMovieListContract.FavouriteMovieListEntry.CONTENT_URI,
+                contentValues);
+    }
+
+    private void dataHandler() {
+        if (mIsOnline) {
+            getMovieRelatedAdditionalData();
+        } else {
+            showMovieDetails();
+            favouriteFabButton.hide();
+            mActionBar.setTitle(mTitle);
+            mActionBar.show();
+        }
         populateUI();
     }
 
@@ -130,6 +202,9 @@ public class DetailActivity extends AppCompatActivity {
             showNetworkError();
         } else {
             showMovieDetails();
+            favouriteFabButton.show();
+            mActionBar.setTitle(mTitle);
+            mActionBar.show();
             mAsyncTaskProcessCounter = 0;
             new MovieDataProcessorAsyncTask(new MovieDetailsProcessorAsyncTaskPhaseListenerImpl())
                     .execute(CommonApplicationConstants.REQUEST_TYPE_REVIEW);
@@ -144,9 +219,15 @@ public class DetailActivity extends AppCompatActivity {
     private void receiveIntentValues() {
         Bundle data = getIntent().getExtras();
         Movie selectedMovie = data.getParcelable(CommonApplicationConstants.MOVIE_DATA_KEY);
+        mIsOnline = selectedMovie.isOnline();
         mId = selectedMovie.getId();
-        mBackgroundImagePathEnding = selectedMovie.getBackdropImagePathEnding();
-        mPosterImagePathEnding = selectedMovie.getPosterImagePathEnding();
+        if (mIsOnline) {
+            mBackgroundImagePathEnding = selectedMovie.getBackdropImagePathEnding();
+            mPosterImagePathEnding = selectedMovie.getPosterImagePathEnding();
+        } else {
+            mBackdropByteArray = selectedMovie.getBackdropByteArray();
+            mPosterByteArray = selectedMovie.getPosterByteArray();
+        }
         mTitle = selectedMovie.getTitle();
         mOriginalTitle = selectedMovie.getOriginalTitle();
         mOverview = selectedMovie.getOverview();
@@ -161,56 +242,85 @@ public class DetailActivity extends AppCompatActivity {
      * original title.
      */
     private void populateUI() {
-        ImageUtils.loadImage(this, mPosterImagePathEnding, posterImageView);
-        ImageUtils.loadImage(this, mBackgroundImagePathEnding, backdropImageView);
-        textViewValueHandler(titleTextView, mTitle);
-        textViewValueHandler(averageVoteTextView, mAverageVote);
-        averageVoteTextView.append(RATING_MAX_COMPARATOR_TEXT);
-        textViewValueHandler(overviewTextView, mOverview);
-        releaseDateHandler();
-        originalTitleHandler();
-        favouriteButtonHandler(this, mTitle, mId);
-        initRecyclerView(this, videoListRecyclerView);
-        initRecyclerView(this, reviewListRecyclerView);
+        if (mIsOnline) {
+            ImageUtils.loadMovieImage(this, mPosterImagePathEnding, posterImageView, false);
+            ImageUtils.loadMovieImage(this, mBackgroundImagePathEnding, backdropImageView, false);
+            textViewValueHandler(averageVoteTextView, mAverageVote);
+            averageVoteTextView.append(RATING_MAX_COMPARATOR_TEXT);
+            textViewValueHandler(overviewTextView, mOverview);
+            releaseDateHandler();
+            originalTitleHandler();
+            favouriteButtonHandler(this);
+            initRecyclerView(this, videoListRecyclerView);
+            initRecyclerView(this, reviewListRecyclerView);
+        } else {
+            posterImageView.setImageBitmap(OfflineDataUtils.convertByteArrayToImage(mPosterByteArray));
+            backdropImageView.setImageBitmap(OfflineDataUtils.convertByteArrayToImage(mBackdropByteArray));
+            textViewValueHandler(averageVoteTextView, mAverageVote);
+            averageVoteTextView.append(RATING_MAX_COMPARATOR_TEXT);
+            textViewValueHandler(overviewTextView, mOverview);
+            releaseDateHandler();
+            originalTitleHandler();
+        }
     }
 
-    private void favouriteButtonHandler(final Context context, final String title, final String id) {
-        if (isAlreadyMarkedAsFavourite(id)) {
-            favouriteImageButton.setBackground(
-                    getResources().getDrawable(R.drawable.image_button_shape_red));
+    private void favouriteButtonHandler(final Context context) {
+        if (isAlreadyMarkedAsFavourite(mId)) {
+            favouriteFabButton.setBackgroundTintList(
+                    ColorStateList.valueOf(getResources().getColor(R.color.colorGrey)));
         } else {
-            favouriteImageButton.setBackground(
-                    getResources().getDrawable(R.drawable.image_button_shape_green));
+            favouriteFabButton.setBackgroundTintList(
+                    ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
         }
-        favouriteImageButton.setOnClickListener(new View.OnClickListener() {
+        favouriteFabButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isAlreadyMarkedAsFavourite(id)) {
-                    favouriteImageButton.setBackground(
-                            getResources().getDrawable(R.drawable.image_button_shape_green));
-                    showToastMessage(context, mToast, title + MESSAGE_FOR_REMOVING_FROM_FAVOURITE_LIST);
+                if (isAlreadyMarkedAsFavourite(mId)) {
+                    removeMovieFromFavourites(mId);
+                    favouriteFabButton.setBackgroundTintList(
+                            ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+                    showToastMessage(context, mTitle + MESSAGE_FOR_REMOVING_FROM_FAVOURITE_LIST);
                 } else {
-                    favouriteImageButton.setBackground(
-                            getResources().getDrawable(R.drawable.image_button_shape_red));
-                    showToastMessage(context, mToast, title + MESSAGE_FOR_ADDING_TO_FAVOURITE_LIST);
+                    addMovieToFavourites(
+                            mTitle,
+                            mId,
+                            OfflineDataUtils.convertImageToByteArray(posterImageView),
+                            OfflineDataUtils.convertImageToByteArray(backdropImageView),
+                            mOverview,
+                            mAverageVote,
+                            mReleaseDate);
+                    favouriteFabButton.setBackgroundTintList(
+                            ColorStateList.valueOf(getResources().getColor(R.color.colorGrey)));
+                    showToastMessage(context, mTitle + MESSAGE_FOR_ADDING_TO_FAVOURITE_LIST);
                 }
             }
         });
     }
 
-    private void showToastMessage(Context context, Toast toast, String text) {
-        if (toast != null) {
-            toast.cancel();
+    private void showToastMessage(Context context, String text) {
+        if (mToast != null) {
+            mToast.cancel();
         }
-        toast = Toast.makeText(
+        mToast = Toast.makeText(
                 context,
                 text,
                 Toast.LENGTH_LONG);
-        toast.show();
+        mToast.show();
     }
 
     private boolean isAlreadyMarkedAsFavourite(String id) {
-        return false;
+        Cursor cursor = getContentResolver().query(
+                FavouriteMovieListContract.FavouriteMovieListEntry.CONTENT_URI,
+                new String[] {FavouriteMovieListContract.FavouriteMovieListEntry.COLUMN_NAME_ID},
+                FavouriteMovieListContract.FavouriteMovieListEntry.COLUMN_NAME_ID + " =?",
+                new String[] {id},
+                null
+        );
+        if (cursor.getCount() == 1) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -233,7 +343,9 @@ public class DetailActivity extends AppCompatActivity {
      */
     private void initRecyclerView(Context context, RecyclerView recyclerView) {
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(getResources().getDrawable(R.drawable.recyclerview_item_divider));
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setHasFixedSize(true);
     }
 
@@ -241,7 +353,7 @@ public class DetailActivity extends AppCompatActivity {
      * Function to handle original title text view
      */
     private void originalTitleHandler(){
-        if (mTitle.equals(mOriginalTitle)) {
+        if (mTitle.equals(mOriginalTitle) || mOriginalTitle == null) {
             originalTitleLabelTextView.setVisibility(View.GONE);
             originalTitleTextView.setVisibility(View.GONE);
         } else if (mOriginalTitle.isEmpty()) {
@@ -277,15 +389,14 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.detail_menu, menu);
-        return true;
+        return mIsOnline;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_refresh_detail_menu) {
-            getMovieRelatedAdditionalData();
-            populateUI();
+            dataHandler();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -294,27 +405,33 @@ public class DetailActivity extends AppCompatActivity {
      * Function to make the details of each movie visible
      */
     private void showMovieDetails() {
-        fetchErrorTextView.setVisibility(View.INVISIBLE);
-        networkErrorTextView.setVisibility(View.INVISIBLE);
-        movieDetailScrollView.setVisibility(View.VISIBLE);
+        fetchErrorTextView.setVisibility(View.GONE);
+        networkErrorTextView.setVisibility(View.GONE);
+        movieDetailLinearLayout.setVisibility(View.VISIBLE);
     }
 
     /**
      * Function to make the error message referring to problem with http request visible
      */
     private void showFetchError() {
-        movieDetailScrollView.setVisibility(View.INVISIBLE);
-        networkErrorTextView.setVisibility(View.INVISIBLE);
+        movieDetailLinearLayout.setVisibility(View.GONE);
+        networkErrorTextView.setVisibility(View.GONE);
         fetchErrorTextView.setVisibility(View.VISIBLE);
+        favouriteFabButton.hide();
+        mActionBar.setTitle(DATA_NOT_AVAILABLE);
+        mActionBar.show();
     }
 
     /**
      * Function to make the error message referring to problem with internet connection visible
      */
     private void showNetworkError() {
-        movieDetailScrollView.setVisibility(View.INVISIBLE);
-        fetchErrorTextView.setVisibility(View.INVISIBLE);
+        movieDetailLinearLayout.setVisibility(View.GONE);
+        fetchErrorTextView.setVisibility(View.GONE);
         networkErrorTextView.setVisibility(View.VISIBLE);
+        favouriteFabButton.hide();
+        mActionBar.setTitle(DATA_NOT_AVAILABLE);
+        mActionBar.show();
     }
 
     /**
@@ -369,7 +486,6 @@ public class DetailActivity extends AppCompatActivity {
                     mAsyncTaskProcessCounter ++;
                     if (mAsyncTaskProcessCounter == 2) {
                         if (mReviewList != null && mVideoList != null) {
-                            showMovieDetails();
                             assignValuesToRecyclerView(CommonApplicationConstants.REQUEST_TYPE_REVIEW);
                             assignValuesToRecyclerView(CommonApplicationConstants.REQUEST_TYPE_VIDEO);
                         } else {
@@ -391,20 +507,17 @@ public class DetailActivity extends AppCompatActivity {
      * @param single
      * @return
      */
-    private boolean checkIfSequenceNumberNecessary(
+    private void handleLabel(
             int count,
             TextView labelTextView,
             String pluralBase,
             String single) {
         if (count > 1) {
             labelTextView.setText(pluralBase + count + LIST_LABEL_PLURAL_ENDING);
-            return true;
         } else if (count == 1) {
             labelTextView.setText(single);
-            return false;
         } else {
             labelTextView.setVisibility(View.GONE);
-            return false;
         }
     }
 
@@ -415,29 +528,34 @@ public class DetailActivity extends AppCompatActivity {
     private void assignValuesToRecyclerView(String type) {
         if (type.equals(CommonApplicationConstants.REQUEST_TYPE_REVIEW)) {
             int reviewsNum = mReviewList.size();
-            boolean isReviewSequenceNumberNecessary = checkIfSequenceNumberNecessary(
+            handleLabel(
                     reviewsNum,
                     reviewListLabelTextView,
                     REVIEW_LIST_LABEL_PLURAL_BASE,
-                    REVIEW_LIST_LABEL_SINGLE
-            );
+                    REVIEW_LIST_LABEL_SINGLE);
             ReviewAdapter reviewAdapter = new ReviewAdapter(
                     DetailActivity.this,
-                    mReviewList,
-                    isReviewSequenceNumberNecessary);
+                    mReviewList);
             reviewListRecyclerView.setAdapter(reviewAdapter);
         } else if (type.equals(CommonApplicationConstants.REQUEST_TYPE_VIDEO)) {
             int videosNum = mVideoList.size();
-            boolean isVideoSequenceNumberNecessary = checkIfSequenceNumberNecessary(
+            handleLabel(
                     videosNum,
                     videoListLabelTextView,
                     VIDEO_LIST_LABEL_PLURAL_BASE,
                     VIDEO_LIST_LABEL_SINGLE);
             VideoAdapter videoAdapter = new VideoAdapter(
                     DetailActivity.this,
-                    mVideoList,
-                    isVideoSequenceNumberNecessary);
+                    mVideoList);
             videoListRecyclerView.setAdapter(videoAdapter);
+            new VideoItemTouchHelper(
+                    DetailActivity.this,
+                    mVideoList,
+                    videoAdapter,
+                    videoListRecyclerView,
+                    getSupportLoaderManager())
+                    .itemTouchHelper
+                    .attachToRecyclerView(videoListRecyclerView);
         }
     }
 }

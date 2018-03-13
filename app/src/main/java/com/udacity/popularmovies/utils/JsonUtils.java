@@ -17,14 +17,6 @@ import java.util.List;
  */
 public class JsonUtils {
     private static final String RESULTS_KEY = "results";
-    private static final String BACKDROP_PATH_KEY = "backdrop_path";
-    private static final String POSTER_PATH_KEY = "poster_path";
-    private static final String TITLE_KEY = "title";
-    private static final String ORIGINAL_TITLE_KEY = "original_title";
-    private static final String OVERVIEW_KEY = "overview";
-    private static final String AVERAGE_VOTE_KEY = "vote_average";
-    private static final String RELEASE_DATE_KEY = "release_date";
-    private static final String ID_KEY = "id";
     private static final String AUTHOR_KEY = "author";
     private static final String CONTENT_KEY = "content";
     private static final String URL_KEY = "url";
@@ -44,14 +36,17 @@ public class JsonUtils {
         List<Movie> movieList = new ArrayList<>();
         for (int i = 0; i < results.length(); i++) {
             JSONObject currObject = results.getJSONObject(i);
-            String id = currObject.optString(ID_KEY);
-            String title = currObject.optString(TITLE_KEY);
-            String originalTitle = currObject.optString(ORIGINAL_TITLE_KEY);
-            String averageVote = currObject.optString(AVERAGE_VOTE_KEY);
-            String posterImagePath = currObject.optString(POSTER_PATH_KEY);
-            String backdropImagePath = currObject.optString(BACKDROP_PATH_KEY);
-            String overview = currObject.optString(OVERVIEW_KEY);
-            String releaseDate = currObject.optString(RELEASE_DATE_KEY);
+            String id = currObject.optString(CommonApplicationConstants.ID_KEY);
+            String title = currObject.optString(CommonApplicationConstants.TITLE_KEY);
+            String originalTitle = currObject
+                    .optString(CommonApplicationConstants.ORIGINAL_TITLE_KEY);
+            String averageVote = currObject.optString(CommonApplicationConstants.AVERAGE_VOTE_KEY);
+            String posterImagePath = currObject
+                    .optString(CommonApplicationConstants.POSTER_PATH_KEY);
+            String backdropImagePath = currObject
+                    .optString(CommonApplicationConstants.BACKDROP_PATH_KEY);
+            String overview = currObject.optString(CommonApplicationConstants.OVERVIEW_KEY);
+            String releaseDate = currObject.optString(CommonApplicationConstants.RELEASE_DATE_KEY);
             movieList.add(new Movie(
                     id,
                     title,
@@ -60,7 +55,8 @@ public class JsonUtils {
                     backdropImagePath,
                     overview,
                     averageVote,
-                    releaseDate));
+                    releaseDate,
+                    true));
         }
         return movieList;
     }

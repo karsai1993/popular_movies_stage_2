@@ -1,4 +1,4 @@
-package com.udacity.popularmovies;
+package com.udacity.popularmovies.background;
 
 /**
  * This interface is needed to create a callback mechanism to be able to abstract the Asynctask

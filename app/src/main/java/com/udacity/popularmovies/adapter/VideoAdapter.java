@@ -1,16 +1,28 @@
 package com.udacity.popularmovies.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.DragEvent;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.udacity.popularmovies.CommonApplicationConstants;
 import com.udacity.popularmovies.R;
 import com.udacity.popularmovies.model.Video;
+import com.udacity.popularmovies.utils.ImageUtils;
 import com.udacity.popularmovies.utils.IntentUtils;
 
 import java.util.List;
@@ -19,14 +31,12 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
 
     private Context mContext;
     private List<Video> mVideoList;
-    private boolean mIsSequenceNumberNecessary;
 
-    private final String VIDEO_URL_BASE = "https://www.youtube.com/watch?v=";
+    //private final String VIDEO_URL_BASE = "https://www.youtube.com/watch?v=";
 
-    public VideoAdapter(Context context, List<Video> videoList, boolean isSequenceNumberNecessary) {
+    public VideoAdapter(Context context, List<Video> videoList) {
         this.mContext = context;
         this.mVideoList = videoList;
-        this.mIsSequenceNumberNecessary = isSequenceNumberNecessary;
     }
 
     @Override
@@ -40,20 +50,14 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
 
     @Override
     public void onBindViewHolder(VideoViewHolder holder, int position) {
-        String videoSequence = String.valueOf((position + 1));
         String videoName = mVideoList.get(position).getName();
-        final String videoKey = mVideoList.get(position).getKey();
+        String videoKey = mVideoList.get(position).getKey();
 
-        if (mIsSequenceNumberNecessary) {
-            holder.videoSequenceTextView
-                    .setText(videoSequence + CommonApplicationConstants.DOT_CHARACTER);
-        } else {
-            holder.videoSequenceTextView.setVisibility(View.GONE);
-        }
+        ImageUtils.loadVideoImage(mContext, videoKey, holder.videoPosterImageView);
 
         holder.videoNameTextView.setText(videoName);
 
-        holder.videoShareImageBtn.setOnClickListener(new View.OnClickListener() {
+        /*holder.videoShareImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 IntentUtils.shareUrl(mContext,VIDEO_URL_BASE + videoKey);
@@ -65,7 +69,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
             public void onClick(View view) {
                 IntentUtils.openWebPage(mContext, VIDEO_URL_BASE + videoKey);
             }
-        });
+        });*/
     }
 
     @Override
@@ -73,18 +77,21 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
         return mVideoList.size();
     }
 
-    class VideoViewHolder extends RecyclerView.ViewHolder {
-        final TextView videoSequenceTextView;
+    public class VideoViewHolder extends RecyclerView.ViewHolder{
+        final ImageView videoPosterImageView;
         final TextView videoNameTextView;
-        final ImageButton videoPlayImageBtn;
-        final ImageButton videoShareImageBtn;
+        //final ImageButton videoPlayImageBtn;
+        //final ImageButton videoShareImageBtn;
+        private boolean mIsClicked;
+        private ScaleGestureDetector mDetector;
+        private final String DEBUG_TAG = "VideoAdapter";
 
         public VideoViewHolder(View itemView) {
             super(itemView);
-            videoSequenceTextView = itemView.findViewById(R.id.tv_video_sequence);
+            videoPosterImageView = itemView.findViewById(R.id.iv_video_poster);
             videoNameTextView = itemView.findViewById(R.id.tv_video_name);
-            videoPlayImageBtn = itemView.findViewById(R.id.ib_video_play);
-            videoShareImageBtn = itemView.findViewById(R.id.ib_video_share);
+            //videoPlayImageBtn = itemView.findViewById(R.id.ib_video_play);
+            //videoShareImageBtn = itemView.findViewById(R.id.ib_video_share);
         }
     }
 }

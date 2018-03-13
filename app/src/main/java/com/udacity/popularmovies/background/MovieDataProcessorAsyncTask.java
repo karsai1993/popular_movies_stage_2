@@ -1,4 +1,4 @@
-package com.udacity.popularmovies;
+package com.udacity.popularmovies.background;
 
 import android.os.AsyncTask;
 

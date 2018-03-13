@@ -30,12 +30,15 @@
         </activity>
         <activity
             android:name=".activity.DetailActivity"
-            android:label="@string/detail_activity_label"
             android:parentActivityName=".activity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MainActivity"/>
         </activity>
+        <provider
+            android:authorities="com.udacity.popularmovies"
+            android:name=".data.FavouriteMovieListContentProvider"
+            android:exported="false" />
     </application>
 
 </manifest>

@@ -11,11 +11,16 @@
     <dimen name="detail_activity_title_text_size">22sp</dimen>
     <dimen name="detail_activity_field_label_text_size">18sp</dimen>
     <dimen name="detail_activity_review_author_text_size">16sp</dimen>
-    <dimen name="detail_activity_side_padding">16dp</dimen>
-    <dimen name="detail_activity_inner_padding">5dp</dimen>
+    <dimen name="detail_activity_side_dist">16dp</dimen>
+    <dimen name="detail_activity_inner_dist">5dp</dimen>
     <dimen name="detail_activity_title_padding_bottom">10dp</dimen>
+    <dimen name="detail_activity_star_button_size">50dp</dimen>
+    <dimen name="detail_activity_regular_button_size">30dp</dimen>
+    <dimen name="detail_activity_video_list_item_divider_size">6dp</dimen>
+    <dimen name="detail_activity_star_button_stroke_width">5dp</dimen>
 
     <dimen name="layout_weight_large">0.5</dimen>
     <dimen name="layout_weight_middle">1</dimen>
     <dimen name="layout_weight_low">1.5</dimen>
+    <dimen name="layout_weight_extra_low">2</dimen>
 </resources>

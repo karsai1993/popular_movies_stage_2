@@ -1,5 +1,6 @@
 package com.udacity.popularmovies.model;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -11,13 +12,16 @@ public class Movie implements Parcelable {
     private String mTitle;
     private String mOriginalTitle;
     private String mPosterImagePathEnding;
+    private byte [] mPosterByteArray;
     private String mBackdropImagePathEnding;
+    private byte [] mBackdropByteArray;
     private String mOverview;
     private String mAverageVote;
     private String mReleaseDate;
+    private boolean mIsOnline;
 
     /**
-     * Constructor created to store relevant information for each movie
+     * Constructor created to store relevant information for each movie online
      * @param id
      * @param title
      * @param originalTitle
@@ -34,7 +38,8 @@ public class Movie implements Parcelable {
                  String backdropImagePathEnding,
                  String overview,
                  String averageVote,
-                 String releaseDate) {
+                 String releaseDate,
+                 boolean isOnline) {
         this.mId = id;
         this.mTitle = title;
         this.mOriginalTitle = originalTitle;
@@ -43,6 +48,39 @@ public class Movie implements Parcelable {
         this.mOverview = overview;
         this.mAverageVote = averageVote;
         this.mReleaseDate = releaseDate;
+        this.mIsOnline = isOnline;
+    }
+
+    /**
+     * Constructor created to store relevant information for each movie offline
+     * @param id
+     * @param title
+     * @param originalTitle
+     * @param posterByteArray
+     * @param backdropByteArray
+     * @param overview
+     * @param averageVote
+     * @param releaseDate
+     * @param isOnline
+     */
+    public Movie(String id,
+                 String title,
+                 String originalTitle,
+                 byte [] posterByteArray,
+                 byte [] backdropByteArray,
+                 String overview,
+                 String averageVote,
+                 String releaseDate,
+                 boolean isOnline) {
+        this.mId = id;
+        this.mTitle = title;
+        this.mOriginalTitle = originalTitle;
+        this.mPosterByteArray = posterByteArray;
+        this.mBackdropByteArray = backdropByteArray;
+        this.mOverview = overview;
+        this.mAverageVote = averageVote;
+        this.mReleaseDate = releaseDate;
+        this.mIsOnline = isOnline;
     }
 
     @Override
@@ -52,6 +90,7 @@ public class Movie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt((mIsOnline ? 1 : 0));
         parcel.writeString(mId);
         parcel.writeString(mTitle);
         parcel.writeString(mOriginalTitle);
@@ -60,9 +99,18 @@ public class Movie implements Parcelable {
         parcel.writeString(mOverview);
         parcel.writeString(mAverageVote);
         parcel.writeString(mReleaseDate);
+        if (mPosterByteArray != null) {
+            parcel.writeInt(mPosterByteArray.length);
+            parcel.writeByteArray(mPosterByteArray);
+        }
+        if (mBackdropByteArray != null) {
+            parcel.writeInt(mBackdropByteArray.length);
+            parcel.writeByteArray(mBackdropByteArray);
+        }
     }
 
     private Movie(Parcel in) {
+        mIsOnline = in.readInt() == 1 ? true : false;
         mId = in.readString();
         mTitle = in.readString();
         mOriginalTitle = in.readString();
@@ -71,6 +119,12 @@ public class Movie implements Parcelable {
         mOverview = in.readString();
         mAverageVote = in.readString();
         mReleaseDate = in.readString();
+        if (in.dataAvail() > 0) {
+            mPosterByteArray = new byte[in.readInt()];
+            if (mPosterByteArray.length > 0) in.readByteArray(mPosterByteArray);
+            mBackdropByteArray = new byte[in.readInt()];
+            if (mBackdropByteArray.length > 0) in.readByteArray(mBackdropByteArray);
+        }
     }
 
     public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
@@ -86,6 +140,29 @@ public class Movie implements Parcelable {
         }
     };
 
+    public boolean isOnline() {
+        return mIsOnline;
+    }
+
+    public void setIsOnline(boolean isOnline) {
+        this.mIsOnline = isOnline;
+    }
+
+    public byte [] getPosterByteArray() {
+        return mPosterByteArray;
+    }
+
+    public void setPosterByteArray(byte [] posterByteArray) {
+        this.mPosterByteArray = posterByteArray;
+    }
+
+    public byte [] getBackdropByteArray() {
+        return mBackdropByteArray;
+    }
+
+    public void setBackdropByteArray(byte [] backdropByteArray) {
+        this.mBackdropByteArray = backdropByteArray;
+    }
 
     /**
      * Function to return the id of selected movie

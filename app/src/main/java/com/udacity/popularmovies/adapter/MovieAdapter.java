@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import com.udacity.popularmovies.R;
 import com.udacity.popularmovies.model.Movie;
 import com.udacity.popularmovies.utils.ImageUtils;
+import com.udacity.popularmovies.utils.OfflineDataUtils;
 
 import java.util.List;
 
@@ -21,10 +22,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private final Context mContext;
     private final List<Movie> mMovieList;
     private final ListItemClickListener mOnClickListener;
+    private final boolean mIsOnline;
 
-    public MovieAdapter(Context context, List<Movie> moviesList) {
+    public MovieAdapter(Context context, List<Movie> moviesList, boolean isOnline) {
         this.mContext = context;
         this.mMovieList = moviesList;
+        this.mIsOnline = isOnline;
         this.mOnClickListener = (ListItemClickListener) context;
     }
 
@@ -39,8 +42,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public void onBindViewHolder(MovieViewHolder holder, int position) {
-        String posterImagePathEnding = mMovieList.get(position).getPosterImagePathEnding();
-        ImageUtils.loadImage(mContext, posterImagePathEnding, holder.movieImageView);
+        if (mIsOnline) {
+            String posterImagePathEnding = mMovieList.get(position).getPosterImagePathEnding();
+            ImageUtils.loadMovieImage(mContext, posterImagePathEnding, holder.movieImageView, true);
+        } else {
+            holder.movieImageView.setImageBitmap(OfflineDataUtils.convertByteArrayToImage(mMovieList.get(position).getPosterByteArray()));
+        }
     }
 
     @Override

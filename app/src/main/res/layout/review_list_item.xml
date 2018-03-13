@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/list_item_padding"
-    android:paddingRight="@dimen/list_item_padding" >
+    android:paddingTop="@dimen/list_item_padding">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,6 +13,7 @@
 
         <TextView
             style="@style/review_list_item"
+            android:text="@string/detail_activity_review_author_label"
             android:id="@+id/tv_review_header" />
 
         <TextView
@@ -24,10 +25,12 @@
             android:layout_weight="@dimen/layout_weight_middle" />
 
         <ImageButton
-            style="@style/review_list_item"
+            android:layout_width="@dimen/detail_activity_regular_button_size"
+            android:layout_height="@dimen/detail_activity_regular_button_size"
+            android:layout_gravity="center"
             android:id="@+id/ib_review_open"
             android:src="@drawable/ic_icons8_open_in_browser_96"
-            android:background="@drawable/image_button_shape_green"
+            android:background="@drawable/image_button_shape_basic"
             android:contentDescription="@string/open_in_browser_image_button_content_description"/>
 
     </LinearLayout>

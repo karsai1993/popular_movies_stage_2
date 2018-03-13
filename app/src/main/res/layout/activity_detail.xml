@@ -1,70 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/sv_detail_activity">
+        android:layout_height="match_parent" >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:id="@+id/ll_detail_activity">
 
             <HorizontalScrollView
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/detail_activity_image_layout_height"
-                android:padding="@dimen/detail_activity_inner_padding"
-                android:layout_gravity="center_horizontal">
+                android:padding="@dimen/detail_activity_inner_dist"
+                android:layout_gravity="center" >
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal" >
 
                     <ImageView
                         style="@style/detail_activity_image_view"
                         android:id="@+id/iv_detail_activity_poster"
                         android:contentDescription="@string/poster_image_content_description"
-                        android:paddingRight="@dimen/detail_activity_inner_padding"
-                        android:paddingEnd="@dimen/detail_activity_inner_padding" />
+                        android:paddingRight="@dimen/detail_activity_inner_dist"
+                        android:paddingEnd="@dimen/detail_activity_inner_dist" />
 
                     <ImageView
                         style="@style/detail_activity_image_view"
                         android:id="@+id/iv_detail_activity_backdrop"
                         android:contentDescription="@string/backdrop_image_content_description" />
-
                 </LinearLayout>
 
             </HorizontalScrollView>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingBottom="@dimen/detail_activity_title_padding_bottom"
-                android:paddingLeft="@dimen/detail_activity_side_padding"
-                android:paddingRight="@dimen/detail_activity_side_padding">
+                style="@style/detail_activity_field_layout" >
 
                 <TextView
-                    android:text="asdf"
-                    style="@style/AppTheme"
-                    android:id="@+id/tv_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:layout_gravity="center"
-                    android:textStyle="bold|italic"
-                    android:textSize="@dimen/detail_activity_title_text_size" />
+                    style="@style/detail_activity_field_left_right_label"
+                    android:id="@+id/tv_original_title_label"
+                    android:text="@string/detail_activity_original_title_label"/>
 
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/ib_favourite"
-                    android:src="@drawable/ic_icons8_star_96"
-                    android:contentDescription="@string/star_image_button_content_description"/>
+                <TextView
+                    style="@style/detail_activity_field_left_right_value"
+                    android:id="@+id/tv_original_title" />
 
             </LinearLayout>
 
@@ -94,20 +79,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                style="@style/detail_activity_field_layout" >
-
-                <TextView
-                    style="@style/detail_activity_field_left_right_label"
-                    android:id="@+id/tv_original_title_label"
-                    android:text="@string/detail_activity_original_title_label"/>
-
-                <TextView
-                    style="@style/detail_activity_field_left_right_value"
-                    android:id="@+id/tv_original_title" />
-
-            </LinearLayout>
-
             <TextView
                 style="@style/detail_activity_field_up_down_label"
                 android:text="@string/detail_activity_overview_label" />
@@ -130,12 +101,22 @@
 
             <android.support.v7.widget.RecyclerView
                 style="@style/detail_activity_field_up_down_value"
-                android:paddingBottom="@dimen/detail_activity_side_padding"
+                android:paddingBottom="@dimen/detail_activity_side_dist"
                 android:id="@+id/rv_reviews" />
 
         </LinearLayout>
 
     </ScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_favourite"
+        android:layout_width="@dimen/detail_activity_star_button_size"
+        android:layout_height="@dimen/detail_activity_star_button_size"
+        android:contentDescription="@string/star_image_button_content_description"
+        android:layout_gravity="top|end"
+        android:layout_margin="@dimen/detail_activity_inner_dist"
+        app:srcCompat="@drawable/ic_icons8_star_96"
+        app:fabSize="mini"/>
 
     <TextView
         style="@style/activity_text_view"

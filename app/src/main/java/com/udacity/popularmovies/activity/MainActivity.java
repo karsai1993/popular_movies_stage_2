@@ -3,27 +3,26 @@ package com.udacity.popularmovies.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.udacity.popularmovies.AsyncTaskPhaseListener;
+import com.udacity.popularmovies.background.AsyncTaskPhaseListener;
 import com.udacity.popularmovies.CommonApplicationConstants;
-import com.udacity.popularmovies.MovieDataProcessorAsyncTask;
+import com.udacity.popularmovies.background.MovieDataProcessorAsyncTask;
 import com.udacity.popularmovies.R;
 import com.udacity.popularmovies.adapter.MovieAdapter;
 import com.udacity.popularmovies.model.Movie;
 import com.udacity.popularmovies.utils.JsonUtils;
 import com.udacity.popularmovies.utils.NetworkUtils;
+import com.udacity.popularmovies.utils.OfflineDataUtils;
 
 import org.json.JSONException;
 
@@ -56,20 +55,21 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     private List<Movie> mMovieList;
     private Unbinder mUnbinder;
+    private boolean mIsOnline;
+    private ActionBar mActionBar;
 
     private final int COLUMN_NUMBER = 2;
+    private final String LABEL_PART_FAVOURITES = " - Favourites";
+    private final String LABEL_PART_TOP_RATED = " - Highest Rated";
+    private final String LABEL_PART_MOST_POPULAR = " - Most Popular";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mUnbinder = ButterKnife.bind(this);
-       // GridLayoutManager layoutManager = new GridLayoutManager(this, COLUMN_NUMBER);
-        //LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayout.HORIZONTAL, false);
-        //layoutManager.setOrientation(LinearLayout.HORIZONTAL);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, COLUMN_NUMBER);
         layoutManager.setAutoMeasureEnabled(true);
-        //LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         movieRecyclerView.setLayoutManager(layoutManager);
         movieRecyclerView.setHasFixedSize(true);
         applySortingOrderBasedOnSharedPreferences();
@@ -90,22 +90,45 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
      * @param sharedPreferences
      */
     private void executeSortingBasedOnPreference(SharedPreferences sharedPreferences) {
-        if (!NetworkUtils.isNetworkAvailable(this)) {
-            showNetworkError();
+        String sortingOrderPreferenceValue = sharedPreferences.getString(
+                getString(R.string.pref_sort_order_key),
+                getString(R.string.pref_sort_order_by_popularity_value)
+        );
+        mActionBar = getSupportActionBar();
+        if (sortingOrderPreferenceValue.equals(getString(R.string.pref_sort_order_by_favourites_value))) {
+            mIsOnline = false;
+            mActionBar.setTitle(getString(R.string.app_name) + LABEL_PART_FAVOURITES);
         } else {
-            showMovieList();
-            String sortingOrderPreferenceValue = sharedPreferences.getString(
-                    getString(R.string.pref_sort_order_key),
-                    getString(R.string.pref_sort_order_by_popularity_value)
-            );
-            new MovieDataProcessorAsyncTask(new MovieListDataProcessorAsyncTaskPhaseListenerImpl())
-                    .execute(sortingOrderPreferenceValue);
+            mIsOnline = true;
+            if (sortingOrderPreferenceValue.equals(getString(R.string.pref_sort_order_by_popularity_value))) {
+                mActionBar.setTitle(getString(R.string.app_name) + LABEL_PART_MOST_POPULAR);
+            } else {
+                mActionBar.setTitle(getString(R.string.app_name) + LABEL_PART_TOP_RATED);
+            }
+        }
+        mActionBar.show();
+        if (!mIsOnline) {
+            mMovieList = OfflineDataUtils.loadOfflineDataFromDatabase(this);
+            MovieAdapter movieAdapter = new MovieAdapter(this, mMovieList, false);
+            movieRecyclerView.setAdapter(movieAdapter);
+        } else {
+            if (!NetworkUtils.isNetworkAvailable(this)) {
+                showNetworkError();
+            } else {
+                showMovieList();
+                new MovieDataProcessorAsyncTask(new MovieListDataProcessorAsyncTaskPhaseListenerImpl())
+                        .execute(sortingOrderPreferenceValue);
+            }
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
+        if (mIsOnline) {
+            getMenuInflater().inflate(R.menu.main_menu_online, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.main_menu_offline, menu);
+        }
         return true;
     }
 
@@ -210,7 +233,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                         showMovieList();
                         MovieAdapter movieAdapter = new MovieAdapter(
                                 MainActivity.this,
-                                mMovieList);
+                                mMovieList,
+                                true);
                         movieRecyclerView.setAdapter(movieAdapter);
                     } else {
                         showFetchError();
