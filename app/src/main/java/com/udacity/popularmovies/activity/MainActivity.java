@@ -123,6 +123,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        applySortingOrderBasedOnSharedPreferences();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (mIsOnline) {
             getMenuInflater().inflate(R.menu.main_menu_online, menu);

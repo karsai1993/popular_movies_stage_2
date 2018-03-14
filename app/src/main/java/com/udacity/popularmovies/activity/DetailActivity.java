@@ -73,6 +73,7 @@ public class DetailActivity extends AppCompatActivity {
     private int mAsyncTaskProcessCounter;
     private Toast mToast;
     private ActionBar mActionBar;
+    private Bundle mData;
 
     private final String DATA_NOT_AVAILABLE = "DNA";
     private final String VIDEO_LIST_LABEL_SINGLE = "Trailer:";
@@ -85,6 +86,7 @@ public class DetailActivity extends AppCompatActivity {
             = " is added to list of favourites";
     private final String MESSAGE_FOR_REMOVING_FROM_FAVOURITE_LIST
             = " is removed from list of favourites";
+    private final String STATE_DATA = "dataState";
 
     /**
      * butterknife is a third party library which is used here to binding the ids to fields easier
@@ -238,9 +240,9 @@ public class DetailActivity extends AppCompatActivity {
      * Function to get the intent values from parent class, and to store them in appropriate fields
      */
     private void receiveIntentValues() {
-        Bundle data = getIntent().getExtras();
-        if (data != null) {
-            Movie selectedMovie = data.getParcelable(CommonApplicationConstants.MOVIE_DATA_KEY);
+        mData = getIntent().getExtras();
+        if (mData != null) {
+            Movie selectedMovie = mData.getParcelable(CommonApplicationConstants.MOVIE_DATA_KEY);
             mIsOnline = selectedMovie.isOnline();
             mId = selectedMovie.getId();
             if (mIsOnline) {
@@ -258,6 +260,20 @@ public class DetailActivity extends AppCompatActivity {
         } else {
             showLoadError();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBundle(STATE_DATA, mData);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mData = savedInstanceState.getBundle(STATE_DATA);
+        receiveIntentValues();
+        dataHandler();
     }
 
     /**
