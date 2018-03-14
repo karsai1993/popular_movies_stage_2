@@ -2,6 +2,7 @@
 <resources>
     <dimen name="movie_list_item_padding">16dp</dimen>
     <dimen name="list_item_padding">5dp</dimen>
+    <dimen name="custom_video_list_item_top_padding">7dp</dimen>
 
     <dimen name="response_error_message_text_size">20sp</dimen>
 

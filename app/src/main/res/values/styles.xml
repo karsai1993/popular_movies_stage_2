@@ -76,6 +76,7 @@
     <style name="video_list_main_item" parent="AppTheme">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
+        <!--item name="android:background">@color/colorWhite</item-->
     </style>
 
     <style name="video_list_image_button_item" parent="AppTheme">

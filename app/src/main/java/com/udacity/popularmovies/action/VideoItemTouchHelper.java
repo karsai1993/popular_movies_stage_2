@@ -13,8 +13,12 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.udacity.popularmovies.R;
 import com.udacity.popularmovies.adapter.VideoAdapter;
@@ -29,6 +33,8 @@ import java.util.List;
 public class VideoItemTouchHelper implements LoaderManager.LoaderCallbacks<List<Video>>{
 
     private final String VIDEO_URL_BASE = "https://www.youtube.com/watch?v=";
+    private final String RIGHT_SIDE = "right";
+    private final String LEFT_SIDE = "left";
 
     private Context mContext;
     private List<Video> mVideoList;
@@ -40,9 +46,6 @@ public class VideoItemTouchHelper implements LoaderManager.LoaderCallbacks<List<
     private View mActionView;
     private Drawable mActionDrawable;
     private LayoutInflater mLayoutInflater;
-
-    private final String RIGHT_SIDE = "right";
-    private final String LEFT_SIDE = "left";
 
     public VideoItemTouchHelper (
             Context context,
@@ -57,7 +60,7 @@ public class VideoItemTouchHelper implements LoaderManager.LoaderCallbacks<List<
         this.mLoaderManager = loaderManager;
     }
 
-    public void applySwipeAction(String side, View parentView, Canvas canvas, float dX) {
+    public void applySwipeAction(String side, View parentView, Canvas canvas) {
 
         int bottomPadding = parentView.getPaddingBottom();
         int topPadding = parentView.getPaddingTop();
@@ -66,13 +69,18 @@ public class VideoItemTouchHelper implements LoaderManager.LoaderCallbacks<List<
         int top = parentView.getTop();
         int bottom = parentView.getBottom();
 
-        //parentView.setBackgroundColor(Color.WHITE);
-
         mLayoutInflater = LayoutInflater.from(mContext);
+
         if (side.equals(RIGHT_SIDE)) {
-            mActionView = mLayoutInflater.inflate(R.layout.right_swipe, null, false);
+            mActionView = mLayoutInflater.inflate(
+                    R.layout.right_swipe,
+                    null,
+                    false);
         } else if (side.equals(LEFT_SIDE)) {
-            mActionView = mLayoutInflater.inflate(R.layout.left_swipe, null, false);
+            mActionView = mLayoutInflater.inflate(
+                    R.layout.left_swipe,
+                    null,
+                    false);
         }
         mActionDrawable = getBitmapFromView(mActionView, parentView);
         mActionDrawable.setBounds(
@@ -83,10 +91,16 @@ public class VideoItemTouchHelper implements LoaderManager.LoaderCallbacks<List<
         mActionDrawable.draw(canvas);
     }
 
-    public ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+    public ItemTouchHelper itemTouchHelper = new ItemTouchHelper(
+            new ItemTouchHelper.SimpleCallback(
+                    0,
+                    ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
         @Override
-        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+        public boolean onMove(
+                RecyclerView recyclerView,
+                RecyclerView.ViewHolder viewHolder,
+                RecyclerView.ViewHolder target) {
             return false;
         }
 
@@ -104,19 +118,30 @@ public class VideoItemTouchHelper implements LoaderManager.LoaderCallbacks<List<
         }
 
         @Override
-        public void onChildDraw(Canvas canvas, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        public void onChildDraw(
+                Canvas canvas,
+                RecyclerView recyclerView,
+                RecyclerView.ViewHolder viewHolder,
+                float dX,
+                float dY,
+                int actionState,
+                boolean isCurrentlyActive) {
+
             View view = viewHolder.itemView;
+            TextView textView = view.findViewById(R.id.tv_video_name);
 
             if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
                 float alphaOriginalView = ALPHA_MAX - Math.abs(dX) / (float) view.getWidth();
                 view.setAlpha(alphaOriginalView);
                 view.setTranslationX(dX);
                 if (dX > 0) {
-                    applySwipeAction(RIGHT_SIDE, view, canvas, dX);
+                    applySwipeAction(RIGHT_SIDE, view, canvas);
+                    textView.setBackgroundColor(Color.WHITE);
                 } else if (dX < 0) {
-                    applySwipeAction(LEFT_SIDE, view, canvas, dX);
+                    applySwipeAction(LEFT_SIDE, view, canvas);
+                    textView.setBackgroundColor(Color.WHITE);
                 } else {
-                    view.setBackgroundColor(Color.TRANSPARENT);
+                    textView.setBackgroundColor(Color.TRANSPARENT);
                 }
             } else {
                 super.onChildDraw(canvas, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
@@ -132,13 +157,15 @@ public class VideoItemTouchHelper implements LoaderManager.LoaderCallbacks<List<
     private BitmapDrawable getBitmapFromView(View view, View parentView) {
         view.setDrawingCacheEnabled(true);
 
-        view.measure(View.MeasureSpec.makeMeasureSpec(parentView.getWidth(), View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(parentView.getHeight(), View.MeasureSpec.EXACTLY));
+        view.measure(
+                View.MeasureSpec.makeMeasureSpec(parentView.getWidth(), View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(parentView.getHeight(), View.MeasureSpec.EXACTLY)
+        );
         view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
 
         view.buildDrawingCache(true);
         Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
-        view.setDrawingCacheEnabled(false); // clear drawing cache
+        view.setDrawingCacheEnabled(false);
         return new BitmapDrawable(mContext.getResources(), bitmap);
     }
 

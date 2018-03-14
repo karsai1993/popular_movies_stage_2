@@ -6,7 +6,7 @@ android {
         applicationId "com.udacity.popularmovies"
         minSdkVersion 18
         targetSdkVersion 27
-        versionCode 7
+        versionCode 8
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField 'String', 'MOVIE_API_KEY', MovieApiKey
