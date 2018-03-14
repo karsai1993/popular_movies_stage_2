@@ -15,6 +15,8 @@
 
     <string name="response_fetch_error_message">Data cannot be fetched!\n
                                                 Please, click Refresh in menu!</string>
+    <string name="load_error_message">Data cannot be loaded!\n
+                                      Please, try to open the window again!</string>
     <string name="response_network_error_message">Network seems unavailable!\n
                                                   Please, check,\n
                                                   then click Refresh in menu!</string>
@@ -26,9 +28,13 @@
     <string name="detail_activity_review_author_label">By:</string>
 
     <string name="poster_image_content_description">Poster Image</string>
+    <string name="video_poster_image_content_description">Video Poster Image</string>
     <string name="backdrop_image_content_description">Backdrop Image</string>
+    <string name="play_button_image_content_description">Play Button Image</string>
+    <string name="share_button_image_content_description">Share Button Image</string>
     <string name="open_in_browser_image_button_content_description">Open Browser Image Button</string>
-    <string name="share_image_button_content_description">Share Image Button</string>
-    <string name="play_image_button_content_description">Play Image Button</string>
     <string name="star_image_button_content_description">Add To Favourite List Image Button</string>
+
+    <string name="right_swipe_label">PLAY</string>
+    <string name="left_swipe_label">SHARE</string>
 </resources>

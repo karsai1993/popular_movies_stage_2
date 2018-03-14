@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.udacity.popularmovies.CommonApplicationConstants;
 import com.udacity.popularmovies.R;
 import com.udacity.popularmovies.model.Review;
 import com.udacity.popularmovies.utils.IntentUtils;
@@ -38,12 +37,19 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
     @Override
     public void onBindViewHolder(final ReviewViewHolder holder, int position) {
-        String authorName = mReviewList.get(position).getAuthor();
-        String content = mReviewList.get(position).getContent();
-        final String url = mReviewList.get(position).getUrl();
+        Review currReview = mReviewList.get(position);
+        String authorName = currReview.getAuthor();
+        String content = currReview.getContent();
+        final String url = currReview.getUrl();
 
-        SpannableStringBuilder str = new SpannableStringBuilder(holder.reviewHeaderTextView.getText().toString());
-        str.setSpan(new UnderlineSpan(), 0, holder.reviewHeaderTextView.getText().toString().length(), 0);
+        SpannableStringBuilder str = new SpannableStringBuilder(
+                holder.reviewHeaderTextView.getText().toString()
+        );
+        str.setSpan(
+                new UnderlineSpan(),
+                0,
+                holder.reviewHeaderTextView.getText().toString().length(),
+                0);
         holder.reviewHeaderTextView.setText(str);
 
         holder.reviewAuthorTextView.setText(authorName);

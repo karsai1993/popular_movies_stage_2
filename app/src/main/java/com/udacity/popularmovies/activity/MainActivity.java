@@ -136,7 +136,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            Intent settingsActivityIntent = new Intent(MainActivity.this,
+            Intent settingsActivityIntent = new Intent(
+                    MainActivity.this,
                     SettingsActivity.class);
             startActivity(settingsActivityIntent);
         }

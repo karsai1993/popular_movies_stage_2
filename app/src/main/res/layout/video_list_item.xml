@@ -7,13 +7,14 @@
     android:paddingTop="@dimen/custom_video_list_item_top_padding" >
 
     <TextView
-        style="@style/video_list_main_item"
+        style="@style/video_list_item"
         android:id="@+id/tv_video_name"
         android:gravity="center"
-        android:layout_weight="@dimen/layout_weight_middle" />
+        android:layout_weight="@dimen/common_layout_weight" />
 
     <ImageView
-        style="@style/video_list_main_item"
-        android:id="@+id/iv_video_poster" />
+        style="@style/video_list_item"
+        android:id="@+id/iv_video_poster"
+        android:contentDescription="@string/video_poster_image_content_description" />
 
 </LinearLayout>

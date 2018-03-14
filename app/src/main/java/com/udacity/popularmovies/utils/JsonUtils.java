@@ -55,8 +55,8 @@ public class JsonUtils {
                     backdropImagePath,
                     overview,
                     averageVote,
-                    releaseDate,
-                    true));
+                    releaseDate
+            ));
         }
         return movieList;
     }

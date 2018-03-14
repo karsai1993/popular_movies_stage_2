@@ -15,6 +15,11 @@ import android.support.annotation.Nullable;
 public class FavouriteMovieListContentProvider extends ContentProvider {
 
     private static final int FAVOURITES = 100;
+
+    /**
+     * Function to create an uri matcher
+     * @return
+     */
     public static UriMatcher buildUriMatcher() {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(

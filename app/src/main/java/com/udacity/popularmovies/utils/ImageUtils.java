@@ -50,6 +50,12 @@ public class ImageUtils {
         }
     }
 
+    /**
+     * Load images from http source for videos
+     * @param context
+     * @param videoKey
+     * @param imageView
+     */
     public static void loadVideoImage(
             Context context,
             String videoKey,

@@ -1,6 +1,5 @@
 package com.udacity.popularmovies.model;
 
-import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -38,8 +37,7 @@ public class Movie implements Parcelable {
                  String backdropImagePathEnding,
                  String overview,
                  String averageVote,
-                 String releaseDate,
-                 boolean isOnline) {
+                 String releaseDate) {
         this.mId = id;
         this.mTitle = title;
         this.mOriginalTitle = originalTitle;
@@ -48,7 +46,7 @@ public class Movie implements Parcelable {
         this.mOverview = overview;
         this.mAverageVote = averageVote;
         this.mReleaseDate = releaseDate;
-        this.mIsOnline = isOnline;
+        this.mIsOnline = true;
     }
 
     /**
@@ -61,17 +59,15 @@ public class Movie implements Parcelable {
      * @param overview
      * @param averageVote
      * @param releaseDate
-     * @param isOnline
      */
     public Movie(String id,
                  String title,
                  String originalTitle,
-                 byte [] posterByteArray,
-                 byte [] backdropByteArray,
+                 byte[] posterByteArray,
+                 byte[] backdropByteArray,
                  String overview,
                  String averageVote,
-                 String releaseDate,
-                 boolean isOnline) {
+                 String releaseDate) {
         this.mId = id;
         this.mTitle = title;
         this.mOriginalTitle = originalTitle;
@@ -80,7 +76,7 @@ public class Movie implements Parcelable {
         this.mOverview = overview;
         this.mAverageVote = averageVote;
         this.mReleaseDate = releaseDate;
-        this.mIsOnline = isOnline;
+        this.mIsOnline = false;
     }
 
     @Override
@@ -110,7 +106,7 @@ public class Movie implements Parcelable {
     }
 
     private Movie(Parcel in) {
-        mIsOnline = in.readInt() == 1 ? true : false;
+        mIsOnline = in.readInt() == 1;
         mId = in.readString();
         mTitle = in.readString();
         mOriginalTitle = in.readString();
@@ -122,6 +118,8 @@ public class Movie implements Parcelable {
         if (in.dataAvail() > 0) {
             mPosterByteArray = new byte[in.readInt()];
             if (mPosterByteArray.length > 0) in.readByteArray(mPosterByteArray);
+        }
+        if (in.dataAvail() > 0) {
             mBackdropByteArray = new byte[in.readInt()];
             if (mBackdropByteArray.length > 0) in.readByteArray(mBackdropByteArray);
         }
@@ -140,26 +138,50 @@ public class Movie implements Parcelable {
         }
     };
 
+    /**
+     * Function to get if the process is online
+     * @return if the process is online
+     */
     public boolean isOnline() {
         return mIsOnline;
     }
 
+    /**
+     * Function to set if the process is online if necessary
+     * @param isOnline
+     */
     public void setIsOnline(boolean isOnline) {
         this.mIsOnline = isOnline;
     }
 
+    /**
+     * Function to get the byte array of poster of the selected movie
+     * @return byte array of poster of the selected movie
+     */
     public byte [] getPosterByteArray() {
         return mPosterByteArray;
     }
 
+    /**
+     * Function to set the byte array of poster of the selected movie if necessary
+     * @param posterByteArray
+     */
     public void setPosterByteArray(byte [] posterByteArray) {
         this.mPosterByteArray = posterByteArray;
     }
 
+    /**
+     * Function to get the byte array of backdrop of the selected movie
+     * @return byte array of backdrop of the selected movie
+     */
     public byte [] getBackdropByteArray() {
         return mBackdropByteArray;
     }
 
+    /**
+     * Function to set the byte array of backdrop of the selected movie if necessary
+     * @param backdropByteArray
+     */
     public void setBackdropByteArray(byte [] backdropByteArray) {
         this.mBackdropByteArray = backdropByteArray;
     }

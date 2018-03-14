@@ -4,14 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorAccent"
-    android:gravity="right"
+    android:gravity="end"
     android:id="@+id/ll_right_swipe" >
 
     <TextView
         style="@style/AppTheme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SHARE"
+        android:text="@string/left_swipe_label"
         android:textStyle="bold"
         android:layout_gravity="center" />
 
@@ -19,6 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_icons8_share_filled_500"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:contentDescription="@string/share_button_image_content_description" />
 
 </LinearLayout>

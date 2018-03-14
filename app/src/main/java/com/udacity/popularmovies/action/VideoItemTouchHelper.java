@@ -13,11 +13,8 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.udacity.popularmovies.R;
@@ -28,7 +25,7 @@ import com.udacity.popularmovies.utils.IntentUtils;
 import java.util.List;
 
 /**
- * https://medium.com/@kitek/recyclerview-swipe-to-delete-easier-than-you-thought-cff67ff5e5f6
+ * Class to implement item touch todos
  */
 public class VideoItemTouchHelper implements LoaderManager.LoaderCallbacks<List<Video>>{
 
@@ -60,7 +57,13 @@ public class VideoItemTouchHelper implements LoaderManager.LoaderCallbacks<List<
         this.mLoaderManager = loaderManager;
     }
 
-    public void applySwipeAction(String side, View parentView, Canvas canvas) {
+    /**
+     * Function to implement how the background of the selected item should act
+     * @param side
+     * @param parentView
+     * @param canvas
+     */
+    private void applySwipeAction(String side, View parentView, Canvas canvas) {
 
         int bottomPadding = parentView.getPaddingBottom();
         int topPadding = parentView.getPaddingTop();
@@ -144,15 +147,26 @@ public class VideoItemTouchHelper implements LoaderManager.LoaderCallbacks<List<
                     textView.setBackgroundColor(Color.TRANSPARENT);
                 }
             } else {
-                super.onChildDraw(canvas, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                super.onChildDraw(
+                        canvas,
+                        recyclerView,
+                        viewHolder,
+                        dX,
+                        dY,
+                        actionState,
+                        isCurrentlyActive
+                );
             }
         }
     });
 
     /**
+     * Function to convert view to bitmap to have the background of the selected item.
+     * The main source of the code implementation:
      * https://stackoverflow.com/questions/2339429/android-view-getdrawingcache-returns-null-only-null/4618030#4618030
      * @param view
-     * @return
+     * @param parentView
+     * @return a drawable as bitmap
      */
     private BitmapDrawable getBitmapFromView(View view, View parentView) {
         view.setDrawingCacheEnabled(true);

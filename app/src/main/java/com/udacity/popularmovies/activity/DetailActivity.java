@@ -81,8 +81,10 @@ public class DetailActivity extends AppCompatActivity {
     private final String REVIEW_LIST_LABEL_PLURAL_BASE = "Reviews (";
     private final String LIST_LABEL_PLURAL_ENDING = "):";
     private final String RATING_MAX_COMPARATOR_TEXT = " / 10";
-    private final String MESSAGE_FOR_ADDING_TO_FAVOURITE_LIST = " is added to list of favourites";
-    private final String MESSAGE_FOR_REMOVING_FROM_FAVOURITE_LIST = " is removed from list of favourites";
+    private final String MESSAGE_FOR_ADDING_TO_FAVOURITE_LIST
+            = " is added to list of favourites";
+    private final String MESSAGE_FOR_REMOVING_FROM_FAVOURITE_LIST
+            = " is removed from list of favourites";
 
     /**
      * butterknife is a third party library which is used here to binding the ids to fields easier
@@ -92,6 +94,8 @@ public class DetailActivity extends AppCompatActivity {
     LinearLayout movieDetailLinearLayout;
     @BindView(R.id.tv_detail_request_fetch_error)
     TextView fetchErrorTextView;
+    @BindView(R.id.tv_detail_load_error)
+    TextView loadErrorTextView;
     @BindView(R.id.tv_detail_request_network_error)
     TextView networkErrorTextView;
     @BindView(R.id.pb_detail_request_loading)
@@ -132,6 +136,10 @@ public class DetailActivity extends AppCompatActivity {
         dataHandler();
     }
 
+    /**
+     * Function to remove the actual movie from list of favourites
+     * @param id
+     */
     private void removeMovieFromFavourites(String id) {
         getContentResolver().delete(
                 FavouriteMovieListContract.FavouriteMovieListEntry.CONTENT_URI,
@@ -140,6 +148,16 @@ public class DetailActivity extends AppCompatActivity {
         );
     }
 
+    /**
+     * Function to add the actual movie into the list of favourites
+     * @param title
+     * @param id
+     * @param posterImage
+     * @param backdropImage
+     * @param overview
+     * @param averageVote
+     * @param releaseDate
+     */
     private void addMovieToFavourites(
             String title,
             String id,
@@ -182,6 +200,9 @@ public class DetailActivity extends AppCompatActivity {
                 contentValues);
     }
 
+    /**
+     * Function to execute the detail processor
+     */
     private void dataHandler() {
         if (mIsOnline) {
             getMovieRelatedAdditionalData();
@@ -218,21 +239,25 @@ public class DetailActivity extends AppCompatActivity {
      */
     private void receiveIntentValues() {
         Bundle data = getIntent().getExtras();
-        Movie selectedMovie = data.getParcelable(CommonApplicationConstants.MOVIE_DATA_KEY);
-        mIsOnline = selectedMovie.isOnline();
-        mId = selectedMovie.getId();
-        if (mIsOnline) {
-            mBackgroundImagePathEnding = selectedMovie.getBackdropImagePathEnding();
-            mPosterImagePathEnding = selectedMovie.getPosterImagePathEnding();
+        if (data != null) {
+            Movie selectedMovie = data.getParcelable(CommonApplicationConstants.MOVIE_DATA_KEY);
+            mIsOnline = selectedMovie.isOnline();
+            mId = selectedMovie.getId();
+            if (mIsOnline) {
+                mBackgroundImagePathEnding = selectedMovie.getBackdropImagePathEnding();
+                mPosterImagePathEnding = selectedMovie.getPosterImagePathEnding();
+            } else {
+                mBackdropByteArray = selectedMovie.getBackdropByteArray();
+                mPosterByteArray = selectedMovie.getPosterByteArray();
+            }
+            mTitle = selectedMovie.getTitle();
+            mOriginalTitle = selectedMovie.getOriginalTitle();
+            mOverview = selectedMovie.getOverview();
+            mAverageVote = selectedMovie.getAverageVote();
+            mReleaseDate = selectedMovie.getReleaseDate();
         } else {
-            mBackdropByteArray = selectedMovie.getBackdropByteArray();
-            mPosterByteArray = selectedMovie.getPosterByteArray();
+            showLoadError();
         }
-        mTitle = selectedMovie.getTitle();
-        mOriginalTitle = selectedMovie.getOriginalTitle();
-        mOverview = selectedMovie.getOverview();
-        mAverageVote = selectedMovie.getAverageVote();
-        mReleaseDate = selectedMovie.getReleaseDate();
     }
 
     /**
@@ -264,6 +289,10 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Function to handle star button
+     * @param context
+     */
     private void favouriteButtonHandler(final Context context) {
         if (isAlreadyMarkedAsFavourite(mId)) {
             favouriteFabButton.setBackgroundTintList(
@@ -297,6 +326,12 @@ public class DetailActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Function to show a message for the user about the status of the actual movie when star button
+     * is clicked.
+     * @param context
+     * @param text
+     */
     private void showToastMessage(Context context, String text) {
         if (mToast != null) {
             mToast.cancel();
@@ -308,6 +343,11 @@ public class DetailActivity extends AppCompatActivity {
         mToast.show();
     }
 
+    /**
+     * Function to check if the actual movie is among the favourites
+     * @param id
+     * @return if the actual movie is among the favourites
+     */
     private boolean isAlreadyMarkedAsFavourite(String id) {
         Cursor cursor = getContentResolver().query(
                 FavouriteMovieListContract.FavouriteMovieListEntry.CONTENT_URI,
@@ -316,10 +356,12 @@ public class DetailActivity extends AppCompatActivity {
                 new String[] {id},
                 null
         );
-        if (cursor.getCount() == 1) {
-            return true;
-        } else {
+        if (cursor == null) {
             return false;
+        } else {
+            int count = cursor.getCount();
+            cursor.close();
+            return count == 1;
         }
     }
 
@@ -343,7 +385,8 @@ public class DetailActivity extends AppCompatActivity {
      */
     private void initRecyclerView(Context context, RecyclerView recyclerView) {
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(getResources().getDrawable(R.drawable.recyclerview_item_divider));
+        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(
+                getResources().getDrawable(R.drawable.recyclerview_item_divider));
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setHasFixedSize(true);
@@ -406,6 +449,7 @@ public class DetailActivity extends AppCompatActivity {
      */
     private void showMovieDetails() {
         fetchErrorTextView.setVisibility(View.GONE);
+        loadErrorTextView.setVisibility(View.GONE);
         networkErrorTextView.setVisibility(View.GONE);
         movieDetailLinearLayout.setVisibility(View.VISIBLE);
     }
@@ -416,6 +460,7 @@ public class DetailActivity extends AppCompatActivity {
     private void showFetchError() {
         movieDetailLinearLayout.setVisibility(View.GONE);
         networkErrorTextView.setVisibility(View.GONE);
+        loadErrorTextView.setVisibility(View.GONE);
         fetchErrorTextView.setVisibility(View.VISIBLE);
         favouriteFabButton.hide();
         mActionBar.setTitle(DATA_NOT_AVAILABLE);
@@ -428,7 +473,21 @@ public class DetailActivity extends AppCompatActivity {
     private void showNetworkError() {
         movieDetailLinearLayout.setVisibility(View.GONE);
         fetchErrorTextView.setVisibility(View.GONE);
+        loadErrorTextView.setVisibility(View.GONE);
         networkErrorTextView.setVisibility(View.VISIBLE);
+        favouriteFabButton.hide();
+        mActionBar.setTitle(DATA_NOT_AVAILABLE);
+        mActionBar.show();
+    }
+
+    /**
+     * Function to make the error message referring to problem with data loading visible
+     */
+    private void showLoadError() {
+        movieDetailLinearLayout.setVisibility(View.GONE);
+        fetchErrorTextView.setVisibility(View.GONE);
+        networkErrorTextView.setVisibility(View.GONE);
+        loadErrorTextView.setVisibility(View.VISIBLE);
         favouriteFabButton.hide();
         mActionBar.setTitle(DATA_NOT_AVAILABLE);
         mActionBar.show();
@@ -486,8 +545,12 @@ public class DetailActivity extends AppCompatActivity {
                     mAsyncTaskProcessCounter ++;
                     if (mAsyncTaskProcessCounter == 2) {
                         if (mReviewList != null && mVideoList != null) {
-                            assignValuesToRecyclerView(CommonApplicationConstants.REQUEST_TYPE_REVIEW);
-                            assignValuesToRecyclerView(CommonApplicationConstants.REQUEST_TYPE_VIDEO);
+                            assignValuesToRecyclerView(
+                                    CommonApplicationConstants.REQUEST_TYPE_REVIEW
+                            );
+                            assignValuesToRecyclerView(
+                                    CommonApplicationConstants.REQUEST_TYPE_VIDEO
+                            );
                         } else {
                             showFetchError();
                         }
@@ -500,12 +563,11 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     /**
-     * Function to check if there is a need for sequence number
+     * Function to handle video and review labels
      * @param count
      * @param labelTextView
      * @param pluralBase
      * @param single
-     * @return
      */
     private void handleLabel(
             int count,

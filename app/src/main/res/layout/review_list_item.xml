@@ -22,7 +22,7 @@
             android:textSize="@dimen/detail_activity_review_author_text_size"
             android:textStyle="italic"
             android:gravity="center"
-            android:layout_weight="@dimen/layout_weight_middle" />
+            android:layout_weight="@dimen/common_layout_weight" />
 
         <ImageButton
             android:layout_width="@dimen/detail_activity_regular_button_size"
