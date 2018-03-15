@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.udacity.popularmovies.ListItemClickListener;
 import com.udacity.popularmovies.R;
 import com.udacity.popularmovies.model.Video;
 import com.udacity.popularmovies.utils.ImageUtils;
@@ -18,9 +19,11 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
 
     private Context mContext;
     private List<Video> mVideoList;
+    private ListItemClickListener mOnClickListener;
 
     public VideoAdapter(Context context, List<Video> videoList) {
         this.mContext = context;
+        this.mOnClickListener = (ListItemClickListener) context;
         this.mVideoList = videoList;
     }
 
@@ -49,7 +52,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
         return mVideoList.size();
     }
 
-    public class VideoViewHolder extends RecyclerView.ViewHolder{
+    public class VideoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         final ImageView videoPosterImageView;
         final TextView videoNameTextView;
 
@@ -57,6 +60,12 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
             super(itemView);
             videoPosterImageView = itemView.findViewById(R.id.iv_video_poster);
             videoNameTextView = itemView.findViewById(R.id.tv_video_name);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            mOnClickListener.onListItemClick(getAdapterPosition());
         }
     }
 }

@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.udacity.popularmovies.ListItemClickListener;
 import com.udacity.popularmovies.background.AsyncTaskPhaseListener;
 import com.udacity.popularmovies.CommonApplicationConstants;
 import com.udacity.popularmovies.background.MovieDataProcessorAsyncTask;
@@ -38,7 +39,7 @@ import butterknife.Unbinder;
  * Class for implementing starter point of the application
  */
 public class MainActivity extends AppCompatActivity implements SharedPreferences
-        .OnSharedPreferenceChangeListener, MovieAdapter.ListItemClickListener {
+        .OnSharedPreferenceChangeListener, ListItemClickListener {
 
     /**
      * butterknife is a third party library which is used here to binding the ids to fields easier

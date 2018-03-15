@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.udacity.popularmovies.ListItemClickListener;
 import com.udacity.popularmovies.R;
 import com.udacity.popularmovies.model.Movie;
 import com.udacity.popularmovies.utils.ImageUtils;
@@ -34,7 +35,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        int movieListItemId = R.layout.movie_list_item;
+        int movieListItemId;
+        if (mIsOnline) {
+            movieListItemId = R.layout.online_movie_list_item;
+        } else {
+            movieListItemId = R.layout.offline_movie_list_item;
+        }
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(movieListItemId, parent, false);
         return new MovieViewHolder(view);
@@ -44,9 +50,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public void onBindViewHolder(MovieViewHolder holder, int position) {
         if (mIsOnline) {
             String posterImagePathEnding = mMovieList.get(position).getPosterImagePathEnding();
-            ImageUtils.loadMovieImage(mContext, posterImagePathEnding, holder.movieImageView, true);
+            ImageUtils.loadOnlineMovieImage(
+                    mContext,
+                    posterImagePathEnding,
+                    holder.movieImageView,
+                    true);
         } else {
-            holder.movieImageView.setImageBitmap(OfflineDataUtils.convertByteArrayToImage(mMovieList.get(position).getPosterByteArray()));
+            holder.movieImageView.setImageBitmap(
+                    OfflineDataUtils.convertByteArrayToImage(
+                            mMovieList.get(position).getPosterByteArray()
+                    )
+            );
         }
     }
 
@@ -73,9 +87,5 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             int index = getAdapterPosition();
             mOnClickListener.onListItemClick(index);
         }
-    }
-
-    public interface ListItemClickListener {
-        void onListItemClick(int index);
     }
 }

@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.udacity.popularmovies.ListItemClickListener;
 import com.udacity.popularmovies.action.VideoItemTouchHelper;
 import com.udacity.popularmovies.background.AsyncTaskPhaseListener;
 import com.udacity.popularmovies.CommonApplicationConstants;
@@ -54,7 +55,7 @@ import butterknife.Unbinder;
 /**
  * Class for implementing detail view of each movie
  */
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements ListItemClickListener{
 
     private Unbinder mUnbinder;
     private String mId;
@@ -87,6 +88,7 @@ public class DetailActivity extends AppCompatActivity {
     private final String MESSAGE_FOR_REMOVING_FROM_FAVOURITE_LIST
             = " is removed from list of favourites";
     private final String STATE_DATA = "dataState";
+    private final String ONCLICK_MESSAGE = "Please, swipe right for playing or left for sharing!";
 
     /**
      * butterknife is a third party library which is used here to binding the ids to fields easier
@@ -284,8 +286,16 @@ public class DetailActivity extends AppCompatActivity {
      */
     private void populateUI() {
         if (mIsOnline) {
-            ImageUtils.loadMovieImage(this, mPosterImagePathEnding, posterImageView, false);
-            ImageUtils.loadMovieImage(this, mBackgroundImagePathEnding, backdropImageView, false);
+            ImageUtils.loadOnlineMovieImage(
+                    this,
+                    mPosterImagePathEnding,
+                    posterImageView,
+                    false);
+            ImageUtils.loadOnlineMovieImage(
+                    this,
+                    mBackgroundImagePathEnding,
+                    backdropImageView,
+                    false);
             textViewValueHandler(averageVoteTextView, mAverageVote);
             averageVoteTextView.append(RATING_MAX_COMPARATOR_TEXT);
             textViewValueHandler(overviewTextView, mOverview);
@@ -295,8 +305,10 @@ public class DetailActivity extends AppCompatActivity {
             initRecyclerView(this, videoListRecyclerView);
             initRecyclerView(this, reviewListRecyclerView);
         } else {
-            posterImageView.setImageBitmap(OfflineDataUtils.convertByteArrayToImage(mPosterByteArray));
-            backdropImageView.setImageBitmap(OfflineDataUtils.convertByteArrayToImage(mBackdropByteArray));
+            posterImageView
+                    .setImageBitmap(OfflineDataUtils.convertByteArrayToImage(mPosterByteArray));
+            backdropImageView
+                    .setImageBitmap(OfflineDataUtils.convertByteArrayToImage(mBackdropByteArray));
             textViewValueHandler(averageVoteTextView, mAverageVote);
             averageVoteTextView.append(RATING_MAX_COMPARATOR_TEXT);
             textViewValueHandler(overviewTextView, mOverview);
@@ -507,6 +519,11 @@ public class DetailActivity extends AppCompatActivity {
         favouriteFabButton.hide();
         mActionBar.setTitle(DATA_NOT_AVAILABLE);
         mActionBar.show();
+    }
+
+    @Override
+    public void onListItemClick(int index) {
+        showToastMessage(this, ONCLICK_MESSAGE);
     }
 
     /**

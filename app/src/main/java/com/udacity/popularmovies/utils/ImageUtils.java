@@ -21,7 +21,7 @@ public class ImageUtils {
      * @param pathEnding
      * @param imageView
      */
-    public static void loadMovieImage(
+    public static void loadOnlineMovieImage(
             Context context,
             String pathEnding,
             ImageView imageView,

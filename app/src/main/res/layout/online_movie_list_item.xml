@@ -8,6 +8,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/iv_movie_list_item"
         android:contentDescription="@string/poster_image_content_description"
-        android:adjustViewBounds="true" />
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"/>
 
 </FrameLayout>
