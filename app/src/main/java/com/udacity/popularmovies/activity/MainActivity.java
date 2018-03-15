@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     TextView fetchErrorTextView;
     @BindView(R.id.tv_movie_request_network_error)
     TextView networkErrorTextView;
+    @BindView(R.id.tv_empty_favourite_list_message)
+    TextView emptyFavouriteListMessageTextView;
     @BindView(R.id.pb_movie_request_loading)
     ProgressBar loadingProgressBar;
 
@@ -110,8 +112,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         mActionBar.show();
         if (!mIsOnline) {
             mMovieList = OfflineDataUtils.loadOfflineDataFromDatabase(this);
-            MovieAdapter movieAdapter = new MovieAdapter(this, mMovieList, false);
-            movieRecyclerView.setAdapter(movieAdapter);
+            if (mMovieList.size() == 0) {
+                showEmptyFavouriteListMessage();
+            } else {
+                MovieAdapter movieAdapter = new MovieAdapter(this, mMovieList, false);
+                movieRecyclerView.setAdapter(movieAdapter);
+            }
         } else {
             if (!NetworkUtils.isNetworkAvailable(this)) {
                 showNetworkError();
@@ -180,6 +186,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private void showMovieList() {
         fetchErrorTextView.setVisibility(View.INVISIBLE);
         networkErrorTextView.setVisibility(View.INVISIBLE);
+        emptyFavouriteListMessageTextView.setVisibility(View.INVISIBLE);
         movieRecyclerView.setVisibility(View.VISIBLE);
     }
 
@@ -189,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private void showFetchError() {
         movieRecyclerView.setVisibility(View.INVISIBLE);
         networkErrorTextView.setVisibility(View.INVISIBLE);
+        emptyFavouriteListMessageTextView.setVisibility(View.INVISIBLE);
         fetchErrorTextView.setVisibility(View.VISIBLE);
     }
 
@@ -198,7 +206,18 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private void showNetworkError() {
         movieRecyclerView.setVisibility(View.INVISIBLE);
         fetchErrorTextView.setVisibility(View.INVISIBLE);
+        emptyFavouriteListMessageTextView.setVisibility(View.INVISIBLE);
         networkErrorTextView.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Function to make the message referring to empty favourite list visible
+     */
+    private void showEmptyFavouriteListMessage() {
+        movieRecyclerView.setVisibility(View.INVISIBLE);
+        fetchErrorTextView.setVisibility(View.INVISIBLE);
+        networkErrorTextView.setVisibility(View.INVISIBLE);
+        emptyFavouriteListMessageTextView.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -20,6 +20,10 @@
     <string name="response_network_error_message">Network seems unavailable!\n
                                                   Please, check,\n
                                                   then click Refresh in menu!</string>
+    <string name="empty_favourite_list_message">No movie has been marked as favourite!\n
+                                                This can be done by the button showing a star at
+                                                the top right corner in the window where the details
+                                                of each movie are displayed.</string>
 
     <string name="detail_activity_original_title_label">Original title:</string>
     <string name="detail_activity_average_vote_label">Rating:</string>

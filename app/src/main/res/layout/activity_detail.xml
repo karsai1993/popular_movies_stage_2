@@ -100,7 +100,7 @@
 
             <android.support.v7.widget.RecyclerView
                 style="@style/detail_activity_field_up_down_value"
-                android:paddingBottom="@dimen/detail_activity_side_dist"
+                android:paddingBottom="@dimen/activity_side_dist"
                 android:id="@+id/rv_reviews" />
 
         </LinearLayout>

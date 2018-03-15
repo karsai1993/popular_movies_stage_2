@@ -7,10 +7,11 @@
 
     <dimen name="progress_bar_width_and_height">42dp</dimen>
 
+    <dimen name="activity_side_dist">16dp</dimen>
+
     <dimen name="detail_activity_image_layout_height">200dp</dimen>
     <dimen name="detail_activity_field_label_text_size">18sp</dimen>
     <dimen name="detail_activity_review_author_text_size">16sp</dimen>
-    <dimen name="detail_activity_side_dist">16dp</dimen>
     <dimen name="detail_activity_inner_dist">5dp</dimen>
     <dimen name="detail_activity_star_button_size">50dp</dimen>
     <dimen name="detail_activity_regular_button_size">30dp</dimen>

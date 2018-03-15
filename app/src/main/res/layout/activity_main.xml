@@ -10,6 +10,11 @@
 
     <TextView
         style="@style/activity_text_view"
+        android:id="@+id/tv_empty_favourite_list_message"
+        android:text="@string/empty_favourite_list_message" />
+
+    <TextView
+        style="@style/activity_text_view"
         android:id="@+id/tv_movie_request_fetch_error"
         android:text="@string/response_fetch_error_message" />
 
