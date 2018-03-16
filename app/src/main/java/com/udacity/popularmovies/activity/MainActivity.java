@@ -29,6 +29,7 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private final String LABEL_PART_FAVOURITES = " - Favourites";
     private final String LABEL_PART_TOP_RATED = " - Highest Rated";
     private final String LABEL_PART_MOST_POPULAR = " - Most Popular";
+    private final String STATE_MOVIE_LIST = "movieListState";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,12 +133,24 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        int numOfMovies = mMovieList.size();
+        Movie [] movieArray = new Movie[numOfMovies];
+        for (int i = 0; i < numOfMovies; i++) {
+            movieArray[i] = mMovieList.get(i);
+        }
+        outState.putParcelableArray(STATE_MOVIE_LIST, movieArray);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        Movie [] movieArray = (Movie[]) savedInstanceState.getParcelableArray(STATE_MOVIE_LIST);
+        List<Movie> movieList = new ArrayList<>();
+        for (Movie movie : movieArray) {
+            movieList.add(movie);
+        }
+        mMovieList = movieList;
         applySortingOrderBasedOnSharedPreferences();
     }
 
