@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private Unbinder mUnbinder;
     private boolean mIsOnline;
     private ActionBar mActionBar;
+    private int mPosition = -1;
 
     private final int COLUMN_NUMBER = 2;
     private final String LABEL_PART_FAVOURITES = " - Favourites";
@@ -139,6 +140,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             movieArray[i] = mMovieList.get(i);
         }
         outState.putParcelableArray(STATE_MOVIE_LIST, movieArray);
+        int position = ((GridLayoutManager)movieRecyclerView.getLayoutManager())
+                .findFirstCompletelyVisibleItemPosition();
+        outState.putInt(CommonApplicationConstants.STATE_POSITION, position);
         super.onSaveInstanceState(outState);
     }
 
@@ -152,6 +156,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }
         mMovieList = movieList;
         applySortingOrderBasedOnSharedPreferences();
+        mPosition = savedInstanceState.getInt(CommonApplicationConstants.STATE_POSITION);
+        if (mPosition != -1) {
+            movieRecyclerView.scrollToPosition(mPosition);
+            mPosition = -1;
+        }
     }
 
     @Override

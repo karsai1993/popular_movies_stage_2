@@ -17,4 +17,6 @@ public class CommonApplicationConstants {
 
     public static final String REQUEST_TYPE_REVIEW = "review";
     public static final String REQUEST_TYPE_VIDEO = "video";
+
+    public static final String STATE_POSITION = "positionState";
 }

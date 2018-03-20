@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,6 +76,7 @@ public class DetailActivity extends AppCompatActivity implements ListItemClickLi
     private Toast mToast;
     private ActionBar mActionBar;
     private Bundle mData;
+    private int [] mCoordinates = null;
 
     private final String DATA_NOT_AVAILABLE = "DNA";
     private final String VIDEO_LIST_LABEL_SINGLE = "Trailer:";
@@ -94,6 +96,8 @@ public class DetailActivity extends AppCompatActivity implements ListItemClickLi
      * butterknife is a third party library which is used here to binding the ids to fields easier
      * reference: http://jakewharton.github.io/butterknife/
      */
+    @BindView(R.id.sv_detail_activity)
+    ScrollView movieDetailScrollView;
     @BindView(R.id.ll_detail_activity)
     LinearLayout movieDetailLinearLayout;
     @BindView(R.id.tv_detail_request_fetch_error)
@@ -267,15 +271,38 @@ public class DetailActivity extends AppCompatActivity implements ListItemClickLi
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putBundle(STATE_DATA, mData);
+        int [] coordinates = new int[]{
+                movieDetailScrollView.getScrollX(),
+                movieDetailScrollView.getScrollY()
+        };
+        outState.putIntArray(CommonApplicationConstants.STATE_POSITION, coordinates);
         super.onSaveInstanceState(outState);
     }
 
+    /**
+     * Function to get the state values after rotation. As for scrolling position, there is a need
+     * for a background thread which has a delay due to the asynctasks.
+     * Code hint source:
+     * https://stackoverflow.com/questions/29208086/save-the-position-of-scrollview-when-the-orientation-changes
+     * @param savedInstanceState
+     */
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(final Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mData = savedInstanceState.getBundle(STATE_DATA);
         receiveIntentValues();
         dataHandler();
+        movieDetailScrollView.postDelayed(new Runnable() {
+            public void run() {
+                mCoordinates = savedInstanceState.getIntArray(
+                        CommonApplicationConstants.STATE_POSITION
+                );
+                if (mCoordinates != null) {
+                    movieDetailScrollView.scrollTo(mCoordinates[0], mCoordinates[1]);
+                    mCoordinates = null;
+                }
+            }
+        }, 100);
     }
 
     /**
